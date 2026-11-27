@@ -273,9 +273,9 @@
 
     .brand-block { text-align: center; margin-bottom: 18px; }
     .brand-logo-wrap {
-      width: 150px;
-      height: 76px;
-      margin: 0 auto 12px;
+      width: 170px;
+      height: 82px;
+      margin: 0 auto 10px;
       border-radius: 14px;
       background: #ffffff;
       border: 1px solid var(--border);
@@ -286,8 +286,7 @@
       padding: 8px 12px;
     }
     .brand-logo-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; }
-    .brand-title { font-size: 28px; font-weight: 800; }
-    .brand-tagline { font-size: 14px; font-weight: 600; color: var(--accent); margin-top: 3px; }
+    .brand-tagline { font-size: 15.5px; font-weight: 700; color: var(--accent); margin-top: 2px; }
     .brand-intro { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
     .install-banner {
@@ -338,12 +337,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
     }
 
-    .header-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .header-brand { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
     .header-logo {
       width: 96px;
       height: 44px;
@@ -352,6 +351,7 @@
       padding: 4px 8px;
       object-fit: contain;
       background: #ffffff;
+      flex-shrink: 0;
     }
 
     /* Black & White theme only: rectangle logo container background turns black */
@@ -362,10 +362,19 @@
       border-radius: 12px;
     }
 
-    .header-title { font-size: 18px; font-weight: 800; }
     .header-school {
-      font-size: 12.5px;
-      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
+    }
+    .header-tagline-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--accent);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -691,24 +700,24 @@
 
     .nav-item.active { background: var(--accent-soft); color: var(--accent); }
 
-    /* Protected Viewer Modal ("See") */
+    /* Protected Viewer Modal ("See") with Auto Zoom-Fit */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(15, 23, 42, 0.72);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;
+      padding: 8px;
       z-index: 250;
     }
 
     .viewer-card {
       background: #ffffff;
       border-radius: var(--radius-lg);
-      width: 100%;
-      max-width: 880px;
-      height: 86vh;
+      width: 96vw;
+      max-width: 1180px;
+      height: 92vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -721,13 +730,40 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 11px 16px;
+      padding: 9px 14px;
       background: #ffffff;
       border-bottom: 1px solid var(--border);
-      gap: 10px;
+      gap: 8px;
+      flex-shrink: 0;
     }
 
-    .viewer-frame { flex: 1; width: 100%; border: none; background: #ffffff; }
+    .viewer-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .viewer-stage {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .viewer-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #ffffff;
+      transform-origin: center center;
+      transition: transform 0.2s ease;
+    }
 
     .modal-card {
       background: #ffffff;
@@ -767,9 +803,8 @@
         <div class="brand-logo-wrap">
           <img id="loginBrandLogo" src="./assets/logo-kn.png" alt="InstaLab Logo" onerror="this.src='./assets/icon-192.png'" />
         </div>
-        <h1 class="brand-title">InstaLab</h1>
-        <p class="brand-tagline" data-i18n="tagline">Practical Science Learning</p>
-        <p class="brand-intro" data-i18n="intro">Discover, Explore, Experiment, Learn</p>
+        <p class="brand-tagline" data-i18n="tagline">ಪ್ರಾಯೋಗಿಕ ವಿಜ್ಞಾನ ಕಲಿಕೆ</p>
+        <p class="brand-intro" data-i18n="intro">ಅನ್ವೇಷಿಸಿ • ಪ್ರಯೋಗಿಸಿ • ಅನುಭವಿಸಿ • ಕಲಿಯಿರಿ</p>
       </div>
 
       <div id="installBanner" class="install-banner hidden" role="region" aria-label="Install InstaLab">
@@ -806,7 +841,7 @@
     </div>
 
     <footer style="font-size:12px;color:var(--text-muted);text-align:center;">
-      InstaLab • Simple for Teachers. Powerful for Science Learning.
+      Simple for Teachers. Powerful for Science Learning.
     </footer>
   </main>
 
@@ -816,9 +851,9 @@
       <header class="app-header">
         <div class="header-brand">
           <img id="dashBrandLogo" class="header-logo" src="./assets/logo-kn.png" alt="InstaLab" onerror="this.src='./assets/icon-192.png'" />
-          <div>
-            <div class="header-title">InstaLab</div>
+          <div style="min-width:0;">
             <div class="header-school" id="headerSchoolName">School Name</div>
+            <div class="header-tagline-sub" data-i18n="tagline">ಪ್ರಾಯೋಗಿಕ ವಿಜ್ಞಾನ ಕಲಿಕೆ</div>
           </div>
         </div>
         <div class="lang-switch" role="group" aria-label="Language Selector">
@@ -848,7 +883,7 @@
               </div>
               <div>
                 <div class="chat-name">
-                  <span>InstaLab Assistant</span>
+                  <span>Science Assistant</span>
                   <span class="online-dot"></span>
                 </div>
                 <div class="chat-subtitle" data-i18n="assistantSub">Your Science Learning Assistant</div>
@@ -878,7 +913,7 @@
       <!-- TAB 2: HOME (#tabHome - Middle Tab, Opens First) -->
       <section id="tabHome" aria-label="Home">
         <div class="welcome-card">
-          <div class="welcome-badge">InstaLab</div>
+          <div class="welcome-badge" data-i18n="tagline">ಪ್ರಾಯೋಗಿಕ ವಿಜ್ಞಾನ ಕಲಿಕೆ</div>
           <h2 class="welcome-greeting" id="dynamicGreeting">ನಮಸ್ಕಾರ ಶಿಕ್ಷಕರೇ!</h2>
           <p class="welcome-school-line" id="welcomeSchoolLine"></p>
           <div class="welcome-divider"></div>
@@ -970,14 +1005,20 @@
     </nav>
   </div>
 
-  <!-- PROTECTED IN-APP VIEWER ("See" — blocks Ctrl+U, Ctrl+S, Ctrl+P, Right-Click) -->
+  <!-- PROTECTED IN-APP VIEWER ("See" — Auto Zoom-Fit + Fullscreen) -->
   <div id="inAppViewerModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" oncontextmenu="return false;">
-    <div class="viewer-card" oncontextmenu="return false;">
+    <div id="viewerCard" class="viewer-card" oncontextmenu="return false;">
       <div class="viewer-bar">
-        <strong id="viewerModalTitle" style="font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">InstaLab Viewer</strong>
-        <button type="button" id="closeViewerBtn" class="btn-secondary" style="padding:6px 12px;font-size:12.5px;" data-i18n="btnClose">Close</button>
+        <strong id="viewerModalTitle" style="font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Activity Viewer</strong>
+        <div class="viewer-controls">
+          <button type="button" id="fitViewerBtn" class="btn-secondary" style="padding:5px 10px;font-size:12px;">Fit</button>
+          <button type="button" id="fullViewerBtn" class="btn-secondary" style="padding:5px 10px;font-size:12px;">Full</button>
+          <button type="button" id="closeViewerBtn" class="btn-secondary" style="padding:5px 10px;font-size:12px;" data-i18n="btnClose">Close</button>
+        </div>
       </div>
-      <iframe id="viewerIframe" class="viewer-frame" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="no-referrer"></iframe>
+      <div id="viewerStage" class="viewer-stage">
+        <iframe id="viewerIframe" class="viewer-frame" sandbox="allow-scripts allow-same-origin allow-forms" allowfullscreen referrerpolicy="no-referrer"></iframe>
+      </div>
     </div>
   </div>
 
@@ -986,7 +1027,7 @@
     <div class="modal-card">
       <h3 style="font-size:17px;font-weight:800;margin-bottom:6px;" data-i18n="logoutConfirmTitle">Confirm Logout</h3>
       <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.45;" data-i18n="logoutConfirmBody">
-        Are you sure you want to log out of InstaLab?
+        Are you sure you want to log out?
       </p>
       <div class="modal-actions">
         <button type="button" id="cancelLogoutBtn" class="btn-secondary" data-i18n="btnCancel">Cancel</button>
@@ -1027,7 +1068,7 @@
           errAuth: "ಈ Email ID ನೋಂದಾಯಿಸಲಾಗಿಲ್ಲ ಅಥವಾ ಡಿವೈಸ್ ಮಿತಿ ಪೂರ್ಣವಾಗಿದೆ.",
           errDeviceCleared: "ನಿರ್ವಾಹಕರು ಈ ಡಿವೈಸ್ ಅನ್ನು ಮರುಹೊಂದಿಸಿದ್ದಾರೆ (Reset). ದಯವಿಟ್ಟು ಮತ್ತೆ ಲಾಗಿನ್ ಮಾಡಿ.",
           errBackendMissing: "app-config.js ನಲ್ಲಿ SHEET_WEB_APP_URL ಹೊಂದಿಸಲಾಗಿಲ್ಲ.",
-          installPrompt: "ತ್ವರಿತ ಪ್ರವೇಶಕ್ಕಾಗಿ InstaLab ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ",
+          installPrompt: "ತ್ವರಿತ ಪ್ರವೇಶಕ್ಕಾಗಿ ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ",
           installBtn: "Install App",
           installManual: "ಬ್ರೌಸರ್ ಮೆನು (⋮ / Share) ತೆರೆದು 'Add to Home Screen' ಆಯ್ಕೆ ಮಾಡಿ.",
           wish2LineDefault: "ವಿಜ್ಞಾನವನ್ನು ನೋಡಿ, ಮಾಡಿ, ಅನುಭವಿಸಿ ಕಲಿಯೋಣ!\nಪ್ರತಿ ಪ್ರಯೋಗವೂ ಮಕ್ಕಳಲ್ಲಿ ಹೊಸ ಕುತೂಹಲವನ್ನು ಬೆಳೆಸುತ್ತದೆ.",
@@ -1060,7 +1101,7 @@
           profileSaved: "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ವಿವರಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ.",
           profileErr: "ಹೆಸರು ಮತ್ತು ಶಾಲೆಯ ಹೆಸರು ಖಾಲಿ ಇರಬಾರದು.",
           logoutConfirmTitle: "ಲಾಗ್ ಔಟ್ ದೃಢೀಕರಿಸಿ",
-          logoutConfirmBody: "ನೀವು InstaLab ನಿಂದ ಲಾಗ್ ಔಟ್ ಆಗಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?"
+          logoutConfirmBody: "ನೀವು ಲಾಗ್ ಔಟ್ ಆಗಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?"
         },
         en: {
           tagline: "Practical Science Learning",
@@ -1078,7 +1119,7 @@
           errAuth: "Email ID not authorized or max device limit reached.",
           errDeviceCleared: "This device was reset by admin. Please log in again.",
           errBackendMissing: "SHEET_WEB_APP_URL is not configured in app-config.js.",
-          installPrompt: "Install InstaLab App for quick classroom access",
+          installPrompt: "Install App for quick classroom access",
           installBtn: "Install App",
           installManual: "Open browser menu (⋮ / Share) and tap 'Add to Home Screen'.",
           wish2LineDefault: "Discover, Explore, and Experience Science!\nEvery hands-on experiment sparks curiosity in young minds.",
@@ -1111,7 +1152,7 @@
           profileSaved: "Profile changes saved successfully.",
           profileErr: "Teacher Name and School Name cannot be empty.",
           logoutConfirmTitle: "Confirm Logout",
-          logoutConfirmBody: "Are you sure you want to log out of InstaLab?"
+          logoutConfirmBody: "Are you sure you want to log out?"
         }
       };
 
@@ -1315,17 +1356,63 @@
         }
       }
 
-      /* Protected In-App Viewer ("See") */
+      /* Protected In-App Viewer ("See") with Auto Zoom-Fit */
+      function applyViewerZoomFit() {
+        const stage = document.getElementById("viewerStage");
+        const iframe = document.getElementById("viewerIframe");
+        if (!stage || !iframe) return;
+
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.transform = "scale(1)";
+
+        const stageW = stage.clientWidth;
+        const stageH = stage.clientHeight;
+        if (!stageW || !stageH) return;
+
+        // If on narrow mobile screen and simulation expects desktop viewport, scale smoothly to fit screen
+        if (stageW < 640) {
+          const targetW = 900;
+          const scale = Math.min(1, stageW / targetW);
+          iframe.style.width = `${targetW}px`;
+          iframe.style.height = `${Math.round(stageH / scale)}px`;
+          iframe.style.transform = `scale(${scale})`;
+        }
+      }
+
       function openProtectedViewer(url, title) {
         const modal = document.getElementById("inAppViewerModal");
         const iframe = document.getElementById("viewerIframe");
-        document.getElementById("viewerModalTitle").textContent = title || "InstaLab Viewer";
-        const cleanUrl = url.toLowerCase().includes(".pdf") && !url.includes("#") ? `${url}#toolbar=0&navpanes=0` : url;
+        document.getElementById("viewerModalTitle").textContent = title || "Activity Viewer";
+        const cleanUrl = url.toLowerCase().includes(".pdf") && !url.includes("#")
+          ? `${url}#toolbar=0&navpanes=0&view=FitH`
+          : url;
         iframe.src = cleanUrl;
         modal.classList.remove("hidden");
+        requestAnimationFrame(applyViewerZoomFit);
       }
 
+      window.addEventListener("resize", () => {
+        if (!document.getElementById("inAppViewerModal").classList.contains("hidden")) {
+          applyViewerZoomFit();
+        }
+      });
+
+      document.getElementById("fitViewerBtn").addEventListener("click", applyViewerZoomFit);
+
+      document.getElementById("fullViewerBtn").addEventListener("click", () => {
+        const card = document.getElementById("viewerCard");
+        if (!document.fullscreenElement && card.requestFullscreen) {
+          card.requestFullscreen().catch(() => {});
+        } else if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      });
+
       document.getElementById("closeViewerBtn").addEventListener("click", () => {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
         document.getElementById("inAppViewerModal").classList.add("hidden");
         document.getElementById("viewerIframe").src = "about:blank";
       });

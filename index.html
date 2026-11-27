@@ -329,7 +329,6 @@
       flex-shrink: 0;
     }
 
-    /* Black & White theme only: rectangle logo container background turns black */
     body[data-theme="bw"] .brand-logo-wrap,
     body[data-theme="bw"] .header-logo {
       background: #111214;
@@ -365,7 +364,7 @@
       flex-wrap: wrap;
     }
 
-    /* Home: Today's Special + School + 2-Line Wish */
+    /* Home */
     #tabHome {
       padding: 8px 0 16px;
       display: flex;
@@ -473,7 +472,7 @@
       gap: 8px;
     }
 
-    .chat-assistant-meta { display: flex; align-items: center; gap: 10px; }
+    .chat-assistant-meta { display: flex; align-items: center; gap: 10px; min-width: 0; }
     .chat-avatar {
       width: 44px;
       height: 44px;
@@ -497,6 +496,20 @@
     .chat-name { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
     .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block; }
     .chat-subtitle { font-size: 12px; color: var(--text-muted); }
+
+    .clear-chat-btn {
+      background: #ffffff;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .clear-chat-btn:hover { background: #fef2f2; }
 
     .chat-quick-bar {
       display: flex;
@@ -576,6 +589,32 @@
     .row-result-title { font-size: 14.5px; font-weight: 800; color: var(--text-primary); margin-bottom: 2px; }
     .row-result-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
 
+    .type-suggestions-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      background: var(--surface-subtle);
+      border-top: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .suggestion-chip {
+      background: #ffffff;
+      color: var(--text-primary);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      padding: 4px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .suggestion-chip:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
     .chat-composer {
       display: flex;
       align-items: center;
@@ -598,6 +637,42 @@
 
     .chat-composer input:focus { background: #ffffff; border-color: var(--accent); }
     .chat-send-btn { width: 44px; height: 44px; border-radius: 50%; padding: 0; flex-shrink: 0; }
+
+    /* Feedback Form inside Modal */
+    .fb-q-item {
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .fb-q-item:last-of-type { border-bottom: none; margin-bottom: 6px; }
+    .fb-q-label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .fb-rating-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .fb-choice-pill {
+      border: 1.5px solid var(--border);
+      background: #ffffff;
+      color: var(--text-secondary);
+      border-radius: 9px;
+      padding: 6px 11px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .fb-choice-pill.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
 
     /* Profile Tab */
     .profile-card {
@@ -691,7 +766,7 @@
     .profile-actions { display: flex; gap: 10px; margin-top: 16px; margin-bottom: 14px; }
     .profile-actions > button { flex: 1; }
 
-    /* Bottom Nav: Chat (First) -> Home (Middle) -> Profile (Last) */
+    /* Bottom Nav */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -741,7 +816,7 @@
 
     .nav-item.active { background: var(--accent-soft); color: var(--accent); }
 
-    /* Protected Viewer Modal ("See") with Auto Zoom-Fit */
+    /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -809,18 +884,20 @@
     .modal-card {
       background: #ffffff;
       border-radius: var(--radius-lg);
-      max-width: 380px;
+      max-width: 440px;
       width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
       padding: 22px 20px;
       box-shadow: var(--shadow-md);
       border: 1px solid var(--border);
     }
 
-    .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
     .modal-actions button { flex: 1; }
   </style>
 </head>
-<body oncontextmenu="if(!document.getElementById('inAppViewerModal').classList.contains('hidden')) return false;">
+<body>
 
   <!-- ==================== 1. LOGIN VIEW (#loginView) ==================== -->
   <main id="loginView">
@@ -913,7 +990,7 @@
               <div class="chat-avatar">
                 <img src="./assets/icon-192.png" alt="InstaLab Assistant" />
               </div>
-              <div>
+              <div style="min-width:0;">
                 <div class="chat-name">
                   <span>Science Assistant</span>
                   <span class="online-dot"></span>
@@ -921,14 +998,18 @@
                 <div class="chat-subtitle" data-i18n="assistantSub">Your Science Learning Assistant</div>
               </div>
             </div>
+            <button type="button" id="clearChatBtn" class="clear-chat-btn" data-i18n="btnClearChat">Clear</button>
           </div>
 
           <div class="chat-quick-bar">
             <button type="button" class="quick-chip" data-quick-cmd="Today's Special" data-i18n="chipToday">Today's Special</button>
             <button type="button" class="quick-chip" data-quick-cmd="All Topics" data-i18n="chipAllTopics">All Topics</button>
+            <button type="button" id="openFeedbackBtn" class="quick-chip" data-i18n="chipFeedback">Feedback / ಸಲಹೆ</button>
           </div>
 
           <div id="chatMessages" class="chat-messages" role="log" aria-live="polite"></div>
+
+          <div id="typeSuggestionsBar" class="type-suggestions-bar hidden" aria-label="Topic Suggestions"></div>
 
           <form id="chatForm" class="chat-composer">
             <input id="chatInput" type="text" autocomplete="off" required />
@@ -1049,8 +1130,8 @@
   </div>
 
   <!-- PROTECTED IN-APP VIEWER ("See" — Auto Zoom-Fit + Fullscreen) -->
-  <div id="inAppViewerModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" oncontextmenu="return false;">
-    <div id="viewerCard" class="viewer-card" oncontextmenu="return false;">
+  <div id="inAppViewerModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div id="viewerCard" class="viewer-card">
       <div class="viewer-bar">
         <strong id="viewerModalTitle" style="font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Activity Viewer</strong>
         <div class="viewer-controls">
@@ -1065,9 +1146,39 @@
     </div>
   </div>
 
+  <!-- FEEDBACK / SUGGESTION MODAL (Sheet-Driven Questions) -->
+  <div id="feedbackModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h3 style="font-size:17.5px;font-weight:800;margin-bottom:4px;" data-i18n="feedbackTitle">Feedback / ಸಲಹೆ</h3>
+      <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:14px;" data-i18n="feedbackSub">ನಿಮ್ಮ ಅಭಿಪ್ರಾಯ / ಸಲಹೆ ನೀಡಿ</p>
+      <form id="feedbackForm">
+        <div id="feedbackQuestionsContainer"></div>
+        <div id="feedbackModalAlert" class="alert-box alert-error hidden"></div>
+        <div class="modal-actions">
+          <button type="button" id="closeFeedbackBtn" class="btn-secondary" data-i18n="btnCancel">Cancel</button>
+          <button type="submit" id="submitFeedbackBtn" class="btn-primary" data-i18n="btnSubmitFeedback">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CLEAR CHAT CONFIRMATION DIALOG -->
+  <div id="clearChatModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card" style="max-width:360px;">
+      <h3 style="font-size:17px;font-weight:800;margin-bottom:6px;" data-i18n="clearConfirmTitle">Clear Chat History?</h3>
+      <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.45;" data-i18n="clearConfirmBody">
+        ಈ ಡಿವೈಸ್‌ನಲ್ಲಿರುವ ಹಳೆಯ ಎಲ್ಲಾ ಚಾಟ್ ಸಂದೇಶಗಳನ್ನು ಅಳಿಸಬೇಕೇ?
+      </p>
+      <div class="modal-actions">
+        <button type="button" id="cancelClearChatBtn" class="btn-secondary" data-i18n="btnCancel">Cancel</button>
+        <button type="button" id="confirmClearChatBtn" class="btn-primary" style="background:#dc2626;" data-i18n="btnClearConfirm">Yes, Clear</button>
+      </div>
+    </div>
+  </div>
+
   <!-- LOGOUT CONFIRMATION DIALOG -->
   <div id="logoutModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width:360px;">
       <h3 style="font-size:17px;font-weight:800;margin-bottom:6px;" data-i18n="logoutConfirmTitle">Confirm Logout</h3>
       <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.45;" data-i18n="logoutConfirmBody">
         Are you sure you want to log out?
@@ -1094,6 +1205,12 @@
         CHAT_PREFIX: "instalab_v2_chat_",
         PHOTO_PREFIX: "instalab_v2_photo_"
       };
+
+      const FALLBACK_FEEDBACK_QUESTIONS = [
+        { id: "Q1", question_kn: "ಈ ವಿಜ್ಞಾನ ಸಿಮ್ಯುಲೇಶನ್‌ಗಳು ತರಗತಿಯಲ್ಲಿ ಕಲಿಸಲು ಎಷ್ಟು ಉಪಯುಕ್ತವಾಗಿವೆ?", question_en: "How useful are these science simulations for classroom teaching?", type: "Rating", options_kn: "1, 2, 3, 4, 5", options_en: "1, 2, 3, 4, 5", order: 1 },
+        { id: "Q2", question_kn: "ನೀವು ಯಾವ ಮಾಧ್ಯಮದ ಸಂಪನ್ಮೂಲಗಳನ್ನು ಹೆಚ್ಚಾಗಿ ಬಳಸುತ್ತೀರಿ?", question_en: "Which medium resources do you use the most?", type: "Single_Choice", options_kn: "ಕನ್ನಡ ಮಾಧ್ಯಮ, ಇಂಗ್ಲಿಷ್ ಮಾಧ್ಯಮ, ಎರಡೂ (Both)", options_en: "Kannada Medium, English Medium, Both", order: 2 },
+        { id: "Q3", question_kn: "ತರಗತಿಯಲ್ಲಿ ನೀವು ಯಾವ ಸಂಪನ್ಮೂಲಗಳನ್ನು ಬಳಸಿದ್ದೀರಿ? (ಒಂದಕ್ಕಿಂತ ಹೆಚ್ಚು ಆಯ್ಕೆ ಮಾಡಬಹುದು)", question_en: "Which resources did you use in your class? (Select all that apply)", type: "Multi_Select", options_kn: "PPT, Simulation, Worksheet, Today's Special", options_en: "PPT, Simulation, Worksheet, Today's Special", order: 3 }
+      ];
 
       const I18N = {
         kn: {
@@ -1124,9 +1241,15 @@
           navChat: "ಚಾಟ್",
           navProfile: "ಪ್ರೊಫೈಲ್",
           assistantSub: "ನಿಮ್ಮ ವಿಜ್ಞಾನ ಕಲಿಕಾ ಸಹಾಯಕ",
+          btnClearChat: "Clear",
+          clearConfirmTitle: "ಚಾಟ್ ಹಿಸ್ಟರಿ ಅಳಿಸಬೇಕೇ?",
+          clearConfirmBody: "ಈ ಡಿವೈಸ್‌ನಲ್ಲಿರುವ ಹಳೆಯ ಚಾಟ್ ಸಂದೇಶಗಳನ್ನು ಅಳಿಸಿದ ನಂತರ ಮತ್ತೆ ತರಲು ಸಾಧ್ಯವಿಲ್ಲ.",
+          btnClearConfirm: "ಹೌದು, ಅಳಿಸಿ",
+          chatClearedMsg: "ಹಳೆಯ ಚಾಟ್ ಹಿಸ್ಟರಿ ಅಳಿಸಲಾಗಿದೆ. ಹೊಸ ವಿಷಯವನ್ನು ಹುಡುಕಿ!",
           chatPlaceholder: "'today' ಅಥವಾ ವಿಷಯದ ಅಕ್ಷರ/ಪದ ಟೈಪ್ ಮಾಡಿ (ಉದಾ: heat / ಉಷ್ಣ)...",
           chipToday: "ಇಂದಿನ ವಿಶೇಷ",
           chipAllTopics: "ಎಲ್ಲಾ ವಿಷಯಗಳು",
+          chipFeedback: "Feedback / ಸಲಹೆ",
           chatWelcome: "ನಮಸ್ಕಾರ ಶಿಕ್ಷಕರೇ! ವಿಷಯದ ಯಾವುದೇ ಅಕ್ಷರ ಅಥವಾ ಪದ (ಉದಾ: heat / ಲೋಲಕ) ಟೈಪ್ ಮಾಡಿದರೆ ಆ ಸಾಲಿನ PPT, Simulation, Worksheet ಎಲ್ಲವೂ ಬರುತ್ತವೆ.",
           todayHeading: "ಇಂದಿನ ವಿಶೇಷ • Today's Special",
           noTodaySpecial: "ಇಂದಿನ ದಿನಾಂಕಕ್ಕೆ Special_Days ನಲ್ಲಿ ಯಾವುದೇ Active ಚಟುವಟಿಕೆ ಇಲ್ಲ.",
@@ -1137,6 +1260,11 @@
           btnDownload: "ಡೌನ್‌ಲೋಡ್",
           btnNoAccess: "ಅನುಮತಿ ಇಲ್ಲ (No Access)",
           btnClose: "ಮುಚ್ಚಿ",
+          feedbackTitle: "ಫೀಡ್‌ಬ್ಯಾಕ್ / ಸಲಹೆ",
+          feedbackSub: "ನಿಮ್ಮ ಅಭಿಪ್ರಾಯ / ಸಲಹೆ ನೀಡಿ",
+          btnSubmitFeedback: "ಸಲ್ಲಿಸಿ (Submit)",
+          feedbackNeedOne: "ದಯವಿಟ್ಟು ಕನಿಷ್ಠ ಒಂದು ಪ್ರಶ್ನೆಗಾದರೂ ಉತ್ತರ ನೀಡಿ.",
+          feedbackSavedBot: "ಧನ್ಯವಾದಗಳು ಶಿಕ್ಷಕರೇ! ನಿಮ್ಮ ಫೀಡ್‌ಬ್ಯಾಕ್ / ಸಲಹೆಯನ್ನು ಶೀಟ್‌ನಲ್ಲಿ ದಾಖಲಿಸಲಾಗಿದೆ.",
           profileHeading: "ಶಿಕ್ಷಕರ ಪ್ರೊಫೈಲ್",
           btnUploadPhoto: "ಫೋಟೋ ಹಾಕಿ / Upload Photo",
           btnRemovePhoto: "ತೆಗೆಯಿರಿ",
@@ -1178,9 +1306,15 @@
           navChat: "Chat",
           navProfile: "Profile",
           assistantSub: "Your Science Learning Assistant",
+          btnClearChat: "Clear",
+          clearConfirmTitle: "Clear Chat History?",
+          clearConfirmBody: "Are you sure you want to clear chat messages on this device?",
+          btnClearConfirm: "Yes, Clear",
+          chatClearedMsg: "Chat history cleared. Type any topic to search!",
           chatPlaceholder: "Type 'today' or any topic letter/word (e.g., heat, pendulum)...",
           chipToday: "Today's Special",
           chipAllTopics: "All Topics",
+          chipFeedback: "Feedback / ಸಲಹೆ",
           chatWelcome: "Hello Teacher! Type any topic word (e.g. heat, pendulum) to view all row resources (PPT, Simulation, Worksheet).",
           todayHeading: "Today's Special",
           noTodaySpecial: "No Active special day activity scheduled for today's date.",
@@ -1191,6 +1325,11 @@
           btnDownload: "Download",
           btnNoAccess: "No Access",
           btnClose: "Close",
+          feedbackTitle: "Feedback / ಸಲಹೆ",
+          feedbackSub: "Share your response / suggestion",
+          btnSubmitFeedback: "Submit",
+          feedbackNeedOne: "Please answer at least one question before submitting.",
+          feedbackSavedBot: "Thank you Teacher! Your feedback / suggestion has been recorded.",
           profileHeading: "Teacher Profile",
           btnUploadPhoto: "Upload Photo",
           btnRemovePhoto: "Remove",
@@ -1213,7 +1352,8 @@
         isLoggingIn: false,
         isSendingChat: false,
         deferredPrompt: null,
-        master: { topics: [], special_days: [], today_special: [] }
+        master: { topics: [], special_days: [], today_special: [] },
+        feedbackQuestions: []
       };
 
       function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -1228,9 +1368,18 @@
         return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
       }
 
-      /* Block Ctrl+U, Ctrl+S, Ctrl+P globally & inside viewer */
+      /* Deter Right-Click, F12, Ctrl+U, Ctrl+S, Ctrl+P, Ctrl+Shift+I/J/C */
+      document.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+      });
+
       document.addEventListener("keydown", (e) => {
-        if ((e.ctrlKey || e.metaKey) && ["u", "s", "p"].includes(e.key.toLowerCase())) {
+        const key = e.key.toLowerCase();
+        if (
+          e.key === "F12" ||
+          ((e.ctrlKey || e.metaKey) && ["u", "s", "p"].includes(key)) ||
+          ((e.ctrlKey || e.metaKey) && e.shiftKey && ["i", "j", "c"].includes(key))
+        ) {
           e.preventDefault();
         }
       });
@@ -1254,7 +1403,6 @@
         return "Both / ಎರಡೂ (Kannada & English)";
       }
 
-      /* Theme & Language */
       function applyTheme(theme) {
         const valid = ["teal", "blue", "purple", "orange", "pink", "bw"];
         const chosen = valid.includes(theme) ? theme : "teal";
@@ -1291,9 +1439,9 @@
         updateInstallBannerUI();
         updateHomeView();
         renderChatHistory();
+        renderTypeSuggestions(document.getElementById("chatInput").value);
       }
 
-      /* Install Banner ONLY before login */
       function updateInstallBannerUI() {
         const banner = document.getElementById("installBanner");
         const msgEl = document.getElementById("installBannerMsg");
@@ -1346,7 +1494,6 @@
         return userMed === rowMed;
       }
 
-      /* Teacher Profile Photo Helpers */
       function getPhotoStorageKey() {
         const email = (state.session && state.session.email) ? state.session.email.toLowerCase() : "guest";
         return STORAGE_KEYS.PHOTO_PREFIX + email;
@@ -1417,7 +1564,6 @@
         renderTeacherPhoto();
       });
 
-      /* Build Action Buttons: See / Download / No Access */
       function buildResourceButtonHTML(label, link, access) {
         const acc = String(access || "No Access").trim().toLowerCase();
         const url = String(link || "").trim();
@@ -1439,7 +1585,6 @@
         });
       }
 
-      /* Update Home View: Greeting + School + 2-Line Wish + Today's Special Card */
       function updateHomeView() {
         const hr = new Date().getHours();
         const greetKey = (hr >= 5 && hr < 12) ? "greetMorning"
@@ -1486,7 +1631,6 @@
         }
       }
 
-      /* Protected In-App Viewer ("See") with Auto Zoom-Fit */
       function applyViewerZoomFit() {
         const stage = document.getElementById("viewerStage");
         const iframe = document.getElementById("viewerIframe");
@@ -1546,7 +1690,6 @@
         document.getElementById("viewerIframe").src = "about:blank";
       });
 
-      /* Fetch Master Content */
       async function fetchMasterContent() {
         if (!API_URL) throw new Error("NO_API_URL");
         const res = await fetch(`${API_URL}?action=getActivities&_ts=${Date.now()}`);
@@ -1564,7 +1707,6 @@
         return state.master;
       }
 
-      /* Live Device Reset Check -> Auto Logout if Device_ID cleared in Sheet */
       async function verifyLiveDeviceOrLogout() {
         if (!state.session || !state.session.email || !API_URL) return;
         const devId = getDeviceId();
@@ -1595,7 +1737,6 @@
         }
       }
 
-      /* Row-Based Topic Card Renderer (PPT + Simulation + Worksheet + Extra in 1 card) */
       function renderTopicRowCardHTML(row) {
         const title = state.lang === "kn" ? (row.topic_name_kn || row.topic_name_en) : (row.topic_name_en || row.topic_name_kn);
         const grade = state.lang === "kn" ? (row.grade_kn || row.grade_en) : (row.grade_en || row.grade_kn);
@@ -1635,7 +1776,6 @@
         `;
       }
 
-      /* Chat History & Search */
       function getChatKey() {
         const email = (state.session && state.session.email) ? state.session.email.toLowerCase() : "guest";
         return STORAGE_KEYS.CHAT_PREFIX + email;
@@ -1712,10 +1852,64 @@
         });
       }
 
+      function renderTypeSuggestions(rawQuery) {
+        const bar = document.getElementById("typeSuggestionsBar");
+        const q = String(rawQuery || "").trim().toLowerCase();
+        if (!q || !Array.isArray(state.master.topics) || !state.master.topics.length) {
+          bar.classList.add("hidden");
+          bar.innerHTML = "";
+          return;
+        }
+
+        const seen = new Set();
+        const suggestions = [];
+
+        for (const r of state.master.topics) {
+          if (!matchesUserMedium(r.medium)) continue;
+          const label = state.lang === "kn"
+            ? (r.topic_name_kn || r.topic_name_en || "")
+            : (r.topic_name_en || r.topic_name_kn || "");
+          const hay = [
+            r.topic_id, r.topic_name_kn, r.topic_name_en, r.search_keywords
+          ].join(" ").toLowerCase();
+
+          if (label && hay.includes(q) && !seen.has(label.toLowerCase())) {
+            seen.add(label.toLowerCase());
+            suggestions.push(label);
+            if (suggestions.length >= 5) break;
+          }
+        }
+
+        if (!suggestions.length) {
+          bar.classList.add("hidden");
+          bar.innerHTML = "";
+          return;
+        }
+
+        bar.innerHTML = suggestions.map(s =>
+          `<button type="button" class="suggestion-chip" data-suggest-val="${esc(s)}">${esc(s)}</button>`
+        ).join("");
+        bar.classList.remove("hidden");
+
+        bar.querySelectorAll("[data-suggest-val]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const chosen = btn.getAttribute("data-suggest-val");
+            document.getElementById("chatInput").value = "";
+            renderTypeSuggestions("");
+            handleChatSend(chosen);
+          });
+        });
+      }
+
+      document.getElementById("chatInput").addEventListener("input", (e) => {
+        renderTypeSuggestions(e.target.value);
+      });
+
       async function handleChatSend(rawText) {
         const text = String(rawText || "").trim();
         if (!text || state.isSendingChat) return;
 
+        renderTypeSuggestions("");
         state.isSendingChat = true;
         const sendBtn = document.getElementById("chatSendBtn");
         sendBtn.disabled = true;
@@ -1763,7 +1957,210 @@
         }
       }
 
-      /* Navigation & Dashboard Entry (Opens Home first) */
+      /* Clear Chat with Confirmation */
+      const clearChatModal = document.getElementById("clearChatModal");
+      document.getElementById("clearChatBtn").addEventListener("click", () => {
+        clearChatModal.classList.remove("hidden");
+      });
+      document.getElementById("cancelClearChatBtn").addEventListener("click", () => {
+        clearChatModal.classList.add("hidden");
+      });
+      document.getElementById("confirmClearChatBtn").addEventListener("click", () => {
+        clearChatModal.classList.add("hidden");
+        safeRemove(getChatKey());
+        renderTypeSuggestions("");
+        saveChatHistory([{
+          role: "bot",
+          type: "text",
+          textKn: I18N.kn.chatClearedMsg,
+          textEn: I18N.en.chatClearedMsg,
+          time: formatTime(new Date())
+        }]);
+        renderChatHistory();
+      });
+
+      /* Dynamic Sheet-Driven Feedback / Suggestion (Unlimited Active Rows) */
+      const feedbackModal = document.getElementById("feedbackModal");
+      const feedbackAlert = document.getElementById("feedbackModalAlert");
+
+      function splitOptions(rawStr) {
+        const s = String(rawStr || "").trim();
+        if (!s) return [];
+        const parts = [];
+        let cur = "";
+        let parenDepth = 0;
+        for (let i = 0; i < s.length; i++) {
+          const ch = s[i];
+          if (ch === "(") parenDepth++;
+          else if (ch === ")" && parenDepth > 0) parenDepth--;
+          if (ch === "," && parenDepth === 0) {
+            if (cur.trim()) parts.push(cur.trim());
+            cur = "";
+          } else {
+            cur += ch;
+          }
+        }
+        if (cur.trim()) parts.push(cur.trim());
+        return parts;
+      }
+
+      async function loadFeedbackQuestions() {
+        if (API_URL) {
+          try {
+            const res = await fetch(`${API_URL}?action=getFeedbackQuestions&_ts=${Date.now()}`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data && Array.isArray(data.questions) && data.questions.length > 0) {
+                return data.questions;
+              }
+            }
+          } catch (e) {}
+        }
+        return FALLBACK_FEEDBACK_QUESTIONS;
+      }
+
+      function renderFeedbackForm(questions) {
+        const box = document.getElementById("feedbackQuestionsContainer");
+        box.innerHTML = questions.map((q, idx) => {
+          const qText = state.lang === "kn" ? (q.question_kn || q.question_en) : (q.question_en || q.question_kn);
+          const qType = String(q.type || "Text").trim().toLowerCase();
+          const qId = esc(q.id || `Q${idx + 1}`);
+          const rawOpts = state.lang === "kn" ? (q.options_kn || q.options_en) : (q.options_en || q.options_kn);
+          const opts = splitOptions(rawOpts);
+
+          if (qType === "rating") {
+            const ratings = opts.length ? opts : ["1", "2", "3", "4", "5"];
+            return `
+              <div class="fb-q-item" data-qid="${qId}" data-qtext="${esc(qText)}" data-qtype="rating">
+                <span class="fb-q-label">${idx + 1}. ${esc(qText)}</span>
+                <div class="fb-rating-row">
+                  ${ratings.map(r => `<button type="button" class="fb-choice-pill" data-fb-val="${esc(r)}">⭐ ${esc(r)}</button>`).join("")}
+                </div>
+              </div>
+            `;
+          }
+
+          if (qType === "single_choice" || qType === "choice") {
+            const choices = opts.length ? opts : (state.lang === "kn" ? ["ಹೌದು", "ಇಲ್ಲ"] : ["Yes", "No"]);
+            return `
+              <div class="fb-q-item" data-qid="${qId}" data-qtext="${esc(qText)}" data-qtype="single_choice">
+                <span class="fb-q-label">${idx + 1}. ${esc(qText)}</span>
+                <div class="fb-rating-row">
+                  ${choices.map(op => `<button type="button" class="fb-choice-pill" data-fb-val="${esc(op)}">${esc(op)}</button>`).join("")}
+                </div>
+              </div>
+            `;
+          }
+
+          if (qType === "multi_select" || qType === "multiselect") {
+            const choices = opts.length ? opts : (state.lang === "kn" ? ["PPT", "Simulation", "Worksheet"] : ["PPT", "Simulation", "Worksheet"]);
+            return `
+              <div class="fb-q-item" data-qid="${qId}" data-qtext="${esc(qText)}" data-qtype="multi_select">
+                <span class="fb-q-label">${idx + 1}. ${esc(qText)}</span>
+                <div class="fb-rating-row">
+                  ${choices.map(op => `<button type="button" class="fb-choice-pill multi" data-fb-val="${esc(op)}">☑ ${esc(op)}</button>`).join("")}
+                </div>
+              </div>
+            `;
+          }
+
+          return `
+            <div class="fb-q-item" data-qid="${qId}" data-qtext="${esc(qText)}" data-qtype="text">
+              <label class="fb-q-label">${idx + 1}. ${esc(qText)}</label>
+              <input type="text" class="form-control fb-text-input" placeholder="${esc(state.lang === "kn" ? "ನಿಮ್ಮ ಉತ್ತರ ಅಥವಾ ಸಲಹೆ ಬರೆಯಿರಿ..." : "Write your response or suggestion...")}" />
+            </div>
+          `;
+        }).join("");
+
+        box.querySelectorAll(".fb-q-item").forEach(item => {
+          const qtype = item.getAttribute("data-qtype");
+          item.querySelectorAll(".fb-choice-pill").forEach(pill => {
+            pill.addEventListener("click", () => {
+              if (qtype === "multi_select") {
+                pill.classList.toggle("active");
+              } else {
+                item.querySelectorAll(".fb-choice-pill").forEach(p => p.classList.remove("active"));
+                pill.classList.add("active");
+              }
+            });
+          });
+        });
+      }
+
+      document.getElementById("openFeedbackBtn").addEventListener("click", async () => {
+        feedbackAlert.classList.add("hidden");
+        const qs = await loadFeedbackQuestions();
+        state.feedbackQuestions = qs;
+        renderFeedbackForm(qs);
+        feedbackModal.classList.remove("hidden");
+      });
+
+      document.getElementById("closeFeedbackBtn").addEventListener("click", () => {
+        feedbackModal.classList.add("hidden");
+      });
+
+      document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        feedbackAlert.classList.add("hidden");
+
+        const collected = [];
+        document.querySelectorAll("#feedbackQuestionsContainer .fb-q-item").forEach(item => {
+          const qid = item.getAttribute("data-qid");
+          const qtext = item.getAttribute("data-qtext");
+          const qtype = item.getAttribute("data-qtype");
+          let ans = "";
+
+          if (qtype === "text") {
+            const inp = item.querySelector(".fb-text-input");
+            ans = inp ? inp.value.trim() : "";
+          } else if (qtype === "multi_select") {
+            const vals = Array.from(item.querySelectorAll(".fb-choice-pill.active"))
+              .map(p => p.getAttribute("data-fb-val"))
+              .filter(Boolean);
+            ans = vals.join(", ");
+          } else {
+            const activePill = item.querySelector(".fb-choice-pill.active");
+            ans = activePill ? activePill.getAttribute("data-fb-val") : "";
+          }
+
+          if (ans) {
+            collected.push({ question_id: qid, question: qtext, answer: ans });
+          }
+        });
+
+        if (!collected.length) {
+          feedbackAlert.textContent = t("feedbackNeedOne");
+          feedbackAlert.classList.remove("hidden");
+          return;
+        }
+
+        const submitBtn = document.getElementById("submitFeedbackBtn");
+        submitBtn.disabled = true;
+
+        try {
+          if (API_URL && state.session) {
+            const params = new URLSearchParams({
+              action: "submitFeedback",
+              email: state.session.email || "",
+              name: state.session.name || "",
+              school: getSchoolName(state.session) || "",
+              answers: JSON.stringify(collected)
+            });
+            await fetch(`${API_URL}?${params.toString()}`);
+          }
+          feedbackModal.classList.add("hidden");
+          pushChat({
+            role: "bot",
+            type: "text",
+            textKn: I18N.kn.feedbackSavedBot,
+            textEn: I18N.en.feedbackSavedBot,
+            time: formatTime(new Date())
+          });
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+
       function switchTab(tab) {
         document.getElementById("tabChat").classList.toggle("hidden", tab !== "chat");
         document.getElementById("tabHome").classList.toggle("hidden", tab !== "home");
@@ -1793,7 +2190,6 @@
         verifyLiveDeviceOrLogout();
       }
 
-      /* Login Form Submit (Medium strictly comes from Google Sheet) */
       document.getElementById("loginForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         if (state.isLoggingIn) return;
@@ -1849,7 +2245,6 @@
         }
       });
 
-      /* Profile Edit / Save / Cancel / Logout (Teacher edits ONLY Name & School Name) */
       const editBtn = document.getElementById("editProfileBtn");
       const saveBtn = document.getElementById("saveProfileBtn");
       const cancelBtn = document.getElementById("cancelProfileBtn");

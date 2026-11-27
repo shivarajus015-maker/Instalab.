@@ -219,31 +219,6 @@
       color: var(--text-muted);
     }
 
-    /* Medium Pills */
-    .medium-pills {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .medium-pill {
-      border: 1.5px solid var(--border);
-      background: #ffffff;
-      color: var(--text-secondary);
-      border-radius: 10px;
-      padding: 9px 6px;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .medium-pill.active {
-      border-color: var(--accent);
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
     /* Login */
     #loginView {
       min-height: 100vh;
@@ -500,17 +475,25 @@
 
     .chat-assistant-meta { display: flex; align-items: center; gap: 10px; }
     .chat-avatar {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: var(--accent-soft);
-      border: 1px solid var(--accent-border);
+      background: #ffffff;
+      border: 1.5px solid var(--accent-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 5px;
+      overflow: hidden;
+      flex-shrink: 0;
+      padding: 0;
     }
-    .chat-avatar img { width: 100%; height: 100%; object-fit: contain; }
+    .chat-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
     .chat-name { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
     .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block; }
     .chat-subtitle { font-size: 12px; color: var(--text-muted); }
@@ -634,17 +617,75 @@
       border-bottom: 1px solid var(--border);
     }
 
+    .profile-avatar-wrap {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      flex-shrink: 0;
+    }
+
     .profile-avatar {
-      width: 58px;
-      height: 58px;
+      width: 68px;
+      height: 68px;
       border-radius: 50%;
       background: var(--accent-soft);
       color: var(--accent);
-      border: 1px solid var(--accent-border);
+      border: 2px solid var(--accent-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .profile-photo-badge {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .photo-btn-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .photo-mini-btn {
+      background: var(--surface-subtle);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .photo-mini-btn.danger {
+      color: #dc2626;
+      border-color: #fecaca;
+      background: #fef2f2;
     }
 
     .profile-actions { display: flex; gap: 10px; margin-top: 16px; margin-bottom: 14px; }
@@ -822,15 +863,6 @@
             <input id="loginEmail" class="form-control" type="email" autocomplete="email" required />
           </div>
 
-          <div class="form-group">
-            <label data-i18n="labelMedium">Medium / ಮಾಧ್ಯಮ</label>
-            <div class="medium-pills" id="loginMediumGroup">
-              <button type="button" class="medium-pill" data-med="Kannada">ಕನ್ನಡ ಮಾಧ್ಯಮ</button>
-              <button type="button" class="medium-pill" data-med="English">English Medium</button>
-              <button type="button" class="medium-pill active" data-med="Both">Both / ಎರಡೂ</button>
-            </div>
-          </div>
-
           <button type="submit" id="loginSubmitBtn" class="btn-primary" style="width:100%;" data-i18n="btnUnlock">
             Unlock / ಪ್ರವೇಶಿಸಿ
           </button>
@@ -934,15 +966,30 @@
       <section id="tabProfile" class="hidden" aria-label="Teacher Profile">
         <div class="profile-card">
           <div class="profile-header">
-            <div class="profile-avatar">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="8" r="5"></circle>
-                <path d="M20 21a8 8 0 0 0-16 0"></path>
-              </svg>
+            <div class="profile-avatar-wrap">
+              <div id="profileAvatarBox" class="profile-avatar" title="Upload Teacher Photo">
+                <svg id="profileAvatarDefaultSvg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="5"></circle>
+                  <path d="M20 21a8 8 0 0 0-16 0"></path>
+                </svg>
+                <img id="profileAvatarImg" class="hidden" alt="Teacher Photo" />
+              </div>
+              <button type="button" id="profilePhotoCameraBtn" class="profile-photo-badge" aria-label="Change Photo">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+              </button>
+              <input id="profPhotoFileInput" type="file" accept="image/*" class="hidden" />
             </div>
-            <div>
+
+            <div style="min-width:0;flex:1;">
               <h2 style="font-size:18px;font-weight:800;" data-i18n="profileHeading">Teacher Profile</h2>
               <p style="font-size:13px;color:var(--text-muted);" id="profileSummarySchool"></p>
+              <div class="photo-btn-row">
+                <button type="button" id="uploadPhotoBtn" class="photo-mini-btn" data-i18n="btnUploadPhoto">ಫೋಟೋ ಹಾಕಿ / Upload Photo</button>
+                <button type="button" id="removePhotoBtn" class="photo-mini-btn danger hidden" data-i18n="btnRemovePhoto">Remove</button>
+              </div>
             </div>
           </div>
 
@@ -955,12 +1002,8 @@
             <input id="profSchoolInput" class="form-control" type="text" disabled />
           </div>
           <div class="form-group">
-            <label for="profMediumSelect" data-i18n="labelMedium">Medium / ಮಾಧ್ಯಮ</label>
-            <select id="profMediumSelect" class="form-control" disabled>
-              <option value="Kannada">ಕನ್ನಡ ಮಾಧ್ಯಮ (Kannada)</option>
-              <option value="English">English Medium</option>
-              <option value="Both">Both / ಎರಡೂ</option>
-            </select>
+            <label for="profMediumDisplay" data-i18n="labelMediumLocked">Medium (Assigned in Master Sheet)</label>
+            <input id="profMediumDisplay" class="form-control" type="text" readonly disabled />
           </div>
           <div class="form-group">
             <label for="profEmailInput" data-i18n="labelEmail">Email ID</label>
@@ -1048,7 +1091,8 @@
         LANG: "instalab_v2_lang",
         SESSION: "instalab_v2_session",
         DEVICE_ID: "instalab_v2_device_id",
-        CHAT_PREFIX: "instalab_v2_chat_"
+        CHAT_PREFIX: "instalab_v2_chat_",
+        PHOTO_PREFIX: "instalab_v2_photo_"
       };
 
       const I18N = {
@@ -1056,11 +1100,11 @@
           tagline: "ಪ್ರಾಯೋಗಿಕ ವಿಜ್ಞಾನ ಕಲಿಕೆ",
           intro: "ಅನ್ವೇಷಿಸಿ • ಪ್ರಯೋಗಿಸಿ • ಅನುಭವಿಸಿ • ಕಲಿಯಿರಿ",
           loginTitle: "ಶಿಕ್ಷಕರ ಪ್ರವೇಶ",
-          loginSub: "ನೋಂದಾಯಿತ Email ID ಮತ್ತು ಮಾಧ್ಯಮ ಆಯ್ಕೆ ಮಾಡಿ",
+          loginSub: "ನೋಂದಾಯಿತ Email ID ಮೂಲಕ ಪ್ರವೇಶಿಸಿ (ಮಾಧ್ಯಮವನ್ನು ಶೀಟ್‌ನಲ್ಲಿ ನಿಗದಿಪಡಿಸಲಾಗಿದೆ)",
           labelName: "ಶಿಕ್ಷಕರ ಹೆಸರು",
           labelSchool: "ಶಾಲೆಯ ಹೆಸರು",
           labelEmail: "ಇಮೇಲ್ ಐಡಿ",
-          labelMedium: "ಮಾಧ್ಯಮ / Medium",
+          labelMediumLocked: "ಮಾಧ್ಯಮ (ಶೀಟ್‌ನಲ್ಲಿ ನಿಗದಿಯಾಗಿದೆ - ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ)",
           phEmail: "teacher@school.edu.in",
           btnUnlock: "Unlock / ಪ್ರವೇಶಿಸಿ",
           loggingIn: "ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...",
@@ -1094,11 +1138,14 @@
           btnNoAccess: "ಅನುಮತಿ ಇಲ್ಲ (No Access)",
           btnClose: "ಮುಚ್ಚಿ",
           profileHeading: "ಶಿಕ್ಷಕರ ಪ್ರೊಫೈಲ್",
-          btnEditProfile: "ಪ್ರೊಫೈಲ್ ತಿದ್ದುಪಡಿ",
+          btnUploadPhoto: "ಫೋಟೋ ಹಾಕಿ / Upload Photo",
+          btnRemovePhoto: "ತೆಗೆಯಿರಿ",
+          photoSaved: "ಶಿಕ್ಷಕರ ಫೋಟೋ ಉಳಿಸಲಾಗಿದೆ.",
+          btnEditProfile: "ಹೆಸರು / ಶಾಲೆ ತಿದ್ದುಪಡಿ",
           btnSaveChanges: "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
           btnCancel: "ರದ್ದುಮಾಡಿ",
           btnLogout: "ಲಾಗ್ ಔಟ್",
-          profileSaved: "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ವಿವರಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ.",
+          profileSaved: "ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ಶಾಲೆಯ ವಿವರಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ.",
           profileErr: "ಹೆಸರು ಮತ್ತು ಶಾಲೆಯ ಹೆಸರು ಖಾಲಿ ಇರಬಾರದು.",
           logoutConfirmTitle: "ಲಾಗ್ ಔಟ್ ದೃಢೀಕರಿಸಿ",
           logoutConfirmBody: "ನೀವು ಲಾಗ್ ಔಟ್ ಆಗಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?"
@@ -1107,11 +1154,11 @@
           tagline: "Practical Science Learning",
           intro: "Discover, Explore, Experiment, Learn",
           loginTitle: "Teacher Login",
-          loginSub: "Enter registered Email ID and select Medium",
+          loginSub: "Enter your registered Email ID (Medium is set in Master Sheet)",
           labelName: "Teacher Name",
           labelSchool: "School Name",
           labelEmail: "Email ID",
-          labelMedium: "Medium",
+          labelMediumLocked: "Medium (Assigned in Master Sheet)",
           phEmail: "teacher@school.edu.in",
           btnUnlock: "Unlock / ಪ್ರವೇಶಿಸಿ",
           loggingIn: "Verifying...",
@@ -1145,11 +1192,14 @@
           btnNoAccess: "No Access",
           btnClose: "Close",
           profileHeading: "Teacher Profile",
-          btnEditProfile: "Edit Profile",
+          btnUploadPhoto: "Upload Photo",
+          btnRemovePhoto: "Remove",
+          photoSaved: "Teacher profile photo saved.",
+          btnEditProfile: "Edit Name / School",
           btnSaveChanges: "Save Changes",
           btnCancel: "Cancel",
           btnLogout: "Logout",
-          profileSaved: "Profile changes saved successfully.",
+          profileSaved: "Teacher Name and School Name saved successfully.",
           profileErr: "Teacher Name and School Name cannot be empty.",
           logoutConfirmTitle: "Confirm Logout",
           logoutConfirmBody: "Are you sure you want to log out?"
@@ -1159,7 +1209,6 @@
       const state = {
         theme: safeGet(STORAGE_KEYS.THEME) || APP_CFG.DEFAULT_THEME || "teal",
         lang: safeGet(STORAGE_KEYS.LANG) || "kn",
-        selectedLoginMedium: "Both",
         session: safeGetJSON(STORAGE_KEYS.SESSION),
         isLoggingIn: false,
         isSendingChat: false,
@@ -1196,6 +1245,13 @@
           safeSet(STORAGE_KEYS.DEVICE_ID, id);
         }
         return id;
+      }
+
+      function formatMediumLabel(med) {
+        const m = String(med || "Both").trim().toLowerCase();
+        if (m === "kannada") return "ಕನ್ನಡ ಮಾಧ್ಯಮ (Kannada)";
+        if (m === "english") return "English Medium";
+        return "Both / ಎರಡೂ (Kannada & English)";
       }
 
       /* Theme & Language */
@@ -1290,6 +1346,77 @@
         return userMed === rowMed;
       }
 
+      /* Teacher Profile Photo Helpers */
+      function getPhotoStorageKey() {
+        const email = (state.session && state.session.email) ? state.session.email.toLowerCase() : "guest";
+        return STORAGE_KEYS.PHOTO_PREFIX + email;
+      }
+
+      function renderTeacherPhoto() {
+        const dataUrl = safeGet(getPhotoStorageKey());
+        const imgEl = document.getElementById("profileAvatarImg");
+        const svgEl = document.getElementById("profileAvatarDefaultSvg");
+        const remBtn = document.getElementById("removePhotoBtn");
+
+        if (dataUrl) {
+          imgEl.src = dataUrl;
+          imgEl.classList.remove("hidden");
+          svgEl.classList.add("hidden");
+          remBtn.classList.remove("hidden");
+        } else {
+          imgEl.src = "";
+          imgEl.classList.add("hidden");
+          svgEl.classList.remove("hidden");
+          remBtn.classList.add("hidden");
+        }
+      }
+
+      function compressAndSavePhoto(file) {
+        if (!file || !file.type.startsWith("image/")) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            const maxDim = 240;
+            let w = img.width;
+            let h = img.height;
+            if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
+            else if (h >= w && h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+            const compressed = canvas.toDataURL("image/jpeg", 0.82);
+            safeSet(getPhotoStorageKey(), compressed);
+            renderTeacherPhoto();
+
+            const profFb = document.getElementById("profileFeedback");
+            profFb.className = "alert-box alert-success";
+            profFb.textContent = t("photoSaved");
+            profFb.classList.remove("hidden");
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      const photoInput = document.getElementById("profPhotoFileInput");
+      document.getElementById("profileAvatarBox").addEventListener("click", () => photoInput.click());
+      document.getElementById("profilePhotoCameraBtn").addEventListener("click", () => photoInput.click());
+      document.getElementById("uploadPhotoBtn").addEventListener("click", () => photoInput.click());
+      photoInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          compressAndSavePhoto(e.target.files[0]);
+          e.target.value = "";
+        }
+      });
+      document.getElementById("removePhotoBtn").addEventListener("click", () => {
+        safeRemove(getPhotoStorageKey());
+        renderTeacherPhoto();
+      });
+
       /* Build Action Buttons: See / Download / No Access */
       function buildResourceButtonHTML(label, link, access) {
         const acc = String(access || "No Access").trim().toLowerCase();
@@ -1328,6 +1455,9 @@
         document.getElementById("welcomeSchoolLine").textContent = schoolName;
         document.getElementById("headerSchoolName").textContent = schoolName;
         document.getElementById("profileSummarySchool").textContent = schoolName;
+        if (state.session) {
+          document.getElementById("profMediumDisplay").value = formatMediumLabel(state.session.medium);
+        }
 
         const todayList = (state.master.today_special || []).filter(s => matchesUserMedium(s.medium));
         const todayCard = document.getElementById("homeTodayCard");
@@ -1370,7 +1500,6 @@
         const stageH = stage.clientHeight;
         if (!stageW || !stageH) return;
 
-        // If on narrow mobile screen and simulation expects desktop viewport, scale smoothly to fit screen
         if (stageW < 640) {
           const targetW = 900;
           const scale = Math.min(1, stageW / targetW);
@@ -1652,10 +1781,11 @@
 
         document.getElementById("profNameInput").value = sessionData.name || "";
         document.getElementById("profSchoolInput").value = getSchoolName(sessionData);
-        document.getElementById("profMediumSelect").value = sessionData.medium || "Both";
+        document.getElementById("profMediumDisplay").value = formatMediumLabel(sessionData.medium);
         document.getElementById("profEmailInput").value = sessionData.email || "";
         document.getElementById("profDeviceInput").value = getDeviceId();
 
+        renderTeacherPhoto();
         updateHomeView();
         renderChatHistory();
         switchTab("home");
@@ -1663,16 +1793,7 @@
         verifyLiveDeviceOrLogout();
       }
 
-      /* Login Medium Pills */
-      document.querySelectorAll("#loginMediumGroup .medium-pill").forEach(pill => {
-        pill.addEventListener("click", () => {
-          document.querySelectorAll("#loginMediumGroup .medium-pill").forEach(p => p.classList.remove("active"));
-          pill.classList.add("active");
-          state.selectedLoginMedium = pill.getAttribute("data-med") || "Both";
-        });
-      });
-
-      /* Login Form Submit */
+      /* Login Form Submit (Medium strictly comes from Google Sheet) */
       document.getElementById("loginForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         if (state.isLoggingIn) return;
@@ -1700,7 +1821,7 @@
         try {
           const devId = getDeviceId();
           const devInfo = (navigator.platform || "Web").slice(0, 18);
-          const url = `${API_URL}?action=verifyUser&email=${encodeURIComponent(email)}&device_id=${encodeURIComponent(devId)}&device_info=${encodeURIComponent(devInfo)}&medium=${encodeURIComponent(state.selectedLoginMedium)}`;
+          const url = `${API_URL}?action=verifyUser&email=${encodeURIComponent(email)}&device_id=${encodeURIComponent(devId)}&device_info=${encodeURIComponent(devInfo)}`;
           const res = await fetch(url);
           if (!res.ok) throw new Error("HTTP_ERR");
           const data = await res.json();
@@ -1715,7 +1836,7 @@
             name: teacher.name || email.split("@")[0],
             school_kn: teacher.school_kn || "",
             school_en: teacher.school_en || "",
-            medium: teacher.medium || state.selectedLoginMedium,
+            medium: teacher.medium || "Both",
             device_id: devId
           });
         } catch (err) {
@@ -1728,19 +1849,17 @@
         }
       });
 
-      /* Profile Edit / Save / Cancel / Logout */
+      /* Profile Edit / Save / Cancel / Logout (Teacher edits ONLY Name & School Name) */
       const editBtn = document.getElementById("editProfileBtn");
       const saveBtn = document.getElementById("saveProfileBtn");
       const cancelBtn = document.getElementById("cancelProfileBtn");
       const nameInp = document.getElementById("profNameInput");
       const schoolInp = document.getElementById("profSchoolInput");
-      const medSel = document.getElementById("profMediumSelect");
       const profFb = document.getElementById("profileFeedback");
 
       function setEditMode(on) {
         nameInp.disabled = !on;
         schoolInp.disabled = !on;
-        medSel.disabled = !on;
         editBtn.classList.toggle("hidden", on);
         saveBtn.classList.toggle("hidden", !on);
         cancelBtn.classList.toggle("hidden", !on);
@@ -1751,7 +1870,6 @@
         if (state.session) {
           nameInp.value = state.session.name || "";
           schoolInp.value = getSchoolName(state.session);
-          medSel.value = state.session.medium || "Both";
         }
         profFb.classList.add("hidden");
         setEditMode(false);
@@ -1760,7 +1878,6 @@
       saveBtn.addEventListener("click", async () => {
         const newName = nameInp.value.trim();
         const newSchool = schoolInp.value.trim();
-        const newMedium = medSel.value;
         if (!newName || !newSchool) {
           profFb.className = "alert-box alert-error";
           profFb.textContent = t("profileErr");
@@ -1771,13 +1888,12 @@
           ...state.session,
           name: newName,
           school_kn: state.lang === "kn" ? newSchool : (state.session.school_kn || newSchool),
-          school_en: state.lang === "en" ? newSchool : (state.session.school_en || newSchool),
-          medium: newMedium
+          school_en: state.lang === "en" ? newSchool : (state.session.school_en || newSchool)
         };
         safeSet(STORAGE_KEYS.SESSION, JSON.stringify(state.session));
 
         if (API_URL) {
-          fetch(`${API_URL}?action=updateProfile&email=${encodeURIComponent(state.session.email)}&name=${encodeURIComponent(newName)}&school=${encodeURIComponent(newSchool)}&medium=${encodeURIComponent(newMedium)}`).catch(() => {});
+          fetch(`${API_URL}?action=updateProfile&email=${encodeURIComponent(state.session.email)}&name=${encodeURIComponent(newName)}&school=${encodeURIComponent(newSchool)}`).catch(() => {});
         }
         updateHomeView();
         setEditMode(false);

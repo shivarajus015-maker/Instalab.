@@ -377,7 +377,7 @@
       background: var(--welcome-grad);
       color: #ffffff;
       border-radius: var(--radius-xl);
-      padding: 28px 22px;
+      padding: 26px 22px;
       text-align: center;
       box-shadow: var(--shadow-md);
     }
@@ -390,7 +390,32 @@
       border-radius: 999px;
       font-size: 12px;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .welcome-photo-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      border: 3px solid rgba(255, 255, 255, 0.88);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.22);
+      background: rgba(255, 255, 255, 0.20);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .welcome-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
     }
 
     .welcome-greeting { font-size: 24px; font-weight: 800; line-height: 1.25; margin-bottom: 4px; }
@@ -814,6 +839,15 @@
       stroke-linejoin: round;
     }
 
+    .nav-photo-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid currentColor;
+      display: block;
+    }
+
     .nav-item.active { background: var(--accent-soft); color: var(--accent); }
 
     /* Modals */
@@ -1027,6 +1061,10 @@
       <section id="tabHome" aria-label="Home">
         <div class="welcome-card">
           <div class="welcome-badge" data-i18n="tagline">ಪ್ರಾಯೋಗಿಕ ವಿಜ್ಞಾನ ಕಲಿಕೆ</div>
+          <div id="homeWelcomePhotoBox" class="welcome-photo-wrap" aria-hidden="true">
+            <img id="homeWelcomePhotoImg" class="hidden" alt="Teacher Photo" />
+            <span id="homeWelcomeInitial">S</span>
+          </div>
           <h2 class="welcome-greeting" id="dynamicGreeting">ನಮಸ್ಕಾರ ಶಿಕ್ಷಕರೇ!</h2>
           <p class="welcome-school-line" id="welcomeSchoolLine"></p>
           <div class="welcome-divider"></div>
@@ -1036,11 +1074,7 @@
           </p>
         </div>
 
-        <div id="homeTodayCard" class="today-home-card hidden">
-          <div class="today-home-title" id="homeTodayTitle"></div>
-          <p class="today-home-wish" id="homeTodayWish"></p>
-          <div class="resource-btn-row" id="homeTodayButtons"></div>
-        </div>
+        <div id="homeTodayCard" class="today-home-card hidden"></div>
       </section>
 
       <!-- TAB 3: PROFILE (#tabProfile) -->
@@ -1122,7 +1156,10 @@
           <span data-i18n="navHome">Home</span>
         </button>
         <button type="button" class="nav-item" data-tab="profile">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+          <span id="navProfileIconSlot" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;">
+            <svg id="navProfileDefaultSvg" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+            <img id="navProfilePhotoImg" class="nav-photo-thumb hidden" alt="Profile" />
+          </span>
           <span data-i18n="navProfile">Profile</span>
         </button>
       </div>
@@ -1507,16 +1544,47 @@
         const svgEl = document.getElementById("profileAvatarDefaultSvg");
         const remBtn = document.getElementById("removePhotoBtn");
 
+        const homeImg = document.getElementById("homeWelcomePhotoImg");
+        const homeInit = document.getElementById("homeWelcomeInitial");
+        const nameStr = (state.session && state.session.name) ? String(state.session.name).trim() : "";
+        const initialChar = nameStr ? nameStr.charAt(0).toUpperCase() : "S";
+
+        const navImg = document.getElementById("navProfilePhotoImg");
+        const navSvg = document.getElementById("navProfileDefaultSvg");
+
         if (dataUrl) {
           imgEl.src = dataUrl;
           imgEl.classList.remove("hidden");
           svgEl.classList.add("hidden");
           remBtn.classList.remove("hidden");
+
+          if (homeImg && homeInit) {
+            homeImg.src = dataUrl;
+            homeImg.classList.remove("hidden");
+            homeInit.classList.add("hidden");
+          }
+          if (navImg && navSvg) {
+            navImg.src = dataUrl;
+            navImg.classList.remove("hidden");
+            navSvg.classList.add("hidden");
+          }
         } else {
           imgEl.src = "";
           imgEl.classList.add("hidden");
           svgEl.classList.remove("hidden");
           remBtn.classList.add("hidden");
+
+          if (homeImg && homeInit) {
+            homeImg.src = "";
+            homeImg.classList.add("hidden");
+            homeInit.textContent = initialChar;
+            homeInit.classList.remove("hidden");
+          }
+          if (navImg && navSvg) {
+            navImg.src = "";
+            navImg.classList.add("hidden");
+            navSvg.classList.remove("hidden");
+          }
         }
       }
 
@@ -1606,29 +1674,44 @@
           document.getElementById("profMediumDisplay").value = formatMediumLabel(state.session.medium);
         }
 
+        const homeInit = document.getElementById("homeWelcomeInitial");
+        const homeImg = document.getElementById("homeWelcomePhotoImg");
+        if (homeInit && homeImg && homeImg.classList.contains("hidden")) {
+          const nameStr = String(teacherName || "").trim();
+          homeInit.textContent = nameStr ? nameStr.charAt(0).toUpperCase() : "S";
+        }
+
         const todayList = (state.master.today_special || []).filter(s => matchesUserMedium(s.medium));
         const todayCard = document.getElementById("homeTodayCard");
         const wishEl = document.getElementById("welcome2LineWish");
 
         if (todayList.length > 0) {
-          const sp = todayList[0];
-          const evTitle = state.lang === "kn" ? sp.event_title_kn : sp.event_title_en;
-          const evWish = state.lang === "kn" ? sp.wish_kn : sp.wish_en;
+          const firstSp = todayList[0];
+          const firstWish = state.lang === "kn" ? (firstSp.wish_kn || firstSp.wish_en) : (firstSp.wish_en || firstSp.wish_kn);
+          wishEl.textContent = firstWish || t("wish2LineDefault");
 
-          wishEl.textContent = evWish || t("wish2LineDefault");
-          document.getElementById("homeTodayTitle").textContent = `✨ ${t("todayHeading")}: ${evTitle}`;
-          document.getElementById("homeTodayWish").textContent = evWish;
+          todayCard.innerHTML = todayList.map((sp, idx) => {
+            const evTitle = state.lang === "kn" ? (sp.event_title_kn || sp.event_title_en) : (sp.event_title_en || sp.event_title_kn);
+            const evWish = state.lang === "kn" ? (sp.wish_kn || sp.wish_en) : (sp.wish_en || sp.wish_kn);
+            const btnsHTML = [
+              buildResourceButtonHTML("Simulation", sp.sim_link, sp.sim_access),
+              buildResourceButtonHTML("PDF / Guide", sp.pdf_link, sp.pdf_access)
+            ].join("");
 
-          const btnsHTML = [
-            buildResourceButtonHTML("Simulation", sp.sim_link, sp.sim_access),
-            buildResourceButtonHTML("PDF / Guide", sp.pdf_link, sp.pdf_access)
-          ].join("");
-          const btnContainer = document.getElementById("homeTodayButtons");
-          btnContainer.innerHTML = btnsHTML;
-          bindViewerButtons(btnContainer);
+            return `
+              <div style="${idx > 0 ? "margin-top:16px;padding-top:16px;border-top:1px dashed var(--border);" : ""}">
+                <div class="today-home-title">✨ ${esc(t("todayHeading"))}: ${esc(evTitle)}</div>
+                ${evWish ? `<p class="today-home-wish">${esc(evWish)}</p>` : ""}
+                <div class="resource-btn-row">${btnsHTML}</div>
+              </div>
+            `;
+          }).join("");
+
+          bindViewerButtons(todayCard);
           todayCard.classList.remove("hidden");
         } else {
           wishEl.textContent = t("wish2LineDefault");
+          todayCard.innerHTML = "";
           todayCard.classList.add("hidden");
         }
       }
@@ -2319,6 +2402,7 @@
         if (API_URL) {
           fetch(`${API_URL}?action=updateProfile&email=${encodeURIComponent(state.session.email)}&name=${encodeURIComponent(newName)}&school=${encodeURIComponent(newSchool)}`).catch(() => {});
         }
+        renderTeacherPhoto();
         updateHomeView();
         setEditMode(false);
         profFb.className = "alert-box alert-success";

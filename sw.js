@@ -1,32 +1,61 @@
-const CACHE_NAME = "instalab-master-pwa-v7";
-const CORE_FILES = [
+const CACHE_NAME = "instalab-shell-v2";
+const STATIC_ASSETS = [
   "./",
   "./index.html",
-  "./app-config.js",
   "./manifest.json",
-  "./assets/logo-kn.png",
-  "./assets/logo-en.png",
+  "./app-config.js",
   "./assets/icon-192.png",
-  "./assets/icon-512.png"
+  "./assets/icon-512.png",
+  "./assets/logo-kn.png",
+  "./assets/logo-en.png"
 ];
 
-self.addEventListener("install", (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((c) => c.addAll(CORE_FILES).catch(() => {}))
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(STATIC_ASSETS).catch(() => {});
+    })
   );
   self.skipWaiting();
 });
 
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches.keys().then((ks) =>
-      Promise.all(ks.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys
+          .filter((key) => key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      )
     )
   );
   self.clients.claim();
 });
 
-self.addEventListener("fetch", (e) => {
-  if (e.request.method !== "GET") return;
-  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  if (req.method !== "GET") return;
+
+  const url = new URL(req.url);
+
+  // Apps Script API calls must always hit the network so auth & latest sheet data stay fresh
+  if (url.hostname.includes("script.google.com") || url.searchParams.has("action")) {
+    return;
+  }
+
+  // Same-origin static assets: cache-first with network fallback
+  if (url.origin === self.location.origin) {
+    event.respondWith(
+      caches.match(req).then((cachedRes) => {
+        if (cachedRes) return cachedRes;
+        return fetch(req).then((networkRes) => {
+          if (networkRes && networkRes.status === 200) {
+            const clone = networkRes.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone)).catch(() => {});
+          }
+          return networkRes;
+        });
+      })
+    );
+  }
 });

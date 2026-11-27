@@ -1,13 +1,14 @@
 {
-  "name": "InstaLab",
+  "name": "InstaLab • Practical Science Learning",
   "short_name": "InstaLab",
-  "description": "ಪ್ರಾಯೋಗಿಕ ವಿಜ್ಞಾನ ಕಲಿಕೆಯ ಹೊಸ ಹೆಜ್ಜೆ • Practical Science Learning",
-  "start_url": "./index.html",
+  "description": "ಅನ್ವೇಷಿಸಿ • ಪ್ರಯೋಗಿಸಿ • ಅನುಭವಿಸಿ • ಕಲಿಯಿರಿ • Practical Science Learning",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "any",
+  "orientation": "portrait-primary",
   "background_color": "#ffffff",
   "theme_color": "#078B82",
+  "lang": "kn",
   "icons": [
     {
       "src": "./assets/icon-192.png",
@@ -16,10 +17,22 @@
       "purpose": "any"
     },
     {
+      "src": "./assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
       "src": "./assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

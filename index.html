@@ -1196,6 +1196,7 @@
 
       const APP_CFG = window.INSTALAB_APP_CONFIG || {};
       const API_URL = APP_CFG.SHEET_WEB_APP_URL || "";
+      const CLIENT_CACHE_MS = 300000; // 5 minutes in-memory cache
 
       const STORAGE_KEYS = {
         THEME: "instalab_v2_theme",
@@ -1293,7 +1294,7 @@
           errEmail: "Please enter a valid Email ID.",
           errAuth: "Email ID not authorized or max device limit reached.",
           errDeviceCleared: "This device was reset by admin. Please log in again.",
-          errBackendMissing: "SHEET_WEB_APP_URL is not configured in app-config.js.",
+          errBackendMissing: "app-config.js ನಲ್ಲಿ SHEET_WEB_APP_URL ಹೊಂದಿಸಲಾಗಿಲ್ಲ.",
           installPrompt: "Install App for quick classroom access",
           installBtn: "Install App",
           installManual: "Open browser menu (⋮ / Share) and tap 'Add to Home Screen'.",
@@ -1353,6 +1354,7 @@
         isSendingChat: false,
         deferredPrompt: null,
         master: { topics: [], special_days: [], today_special: [] },
+        masterFetchedAt: 0,
         feedbackQuestions: []
       };
 
@@ -1690,12 +1692,49 @@
         document.getElementById("viewerIframe").src = "about:blank";
       });
 
-      async function fetchMasterContent() {
+      function forceLogout(alertMsg) {
+        safeRemove(STORAGE_KEYS.SESSION);
+        state.session = null;
+        state.masterFetchedAt = 0;
+        document.getElementById("appView").classList.add("hidden");
+        document.getElementById("loginView").classList.remove("hidden");
+        updateInstallBannerUI();
+        if (alertMsg) {
+          const fb = document.getElementById("loginFeedback");
+          fb.textContent = alertMsg;
+          fb.classList.remove("hidden");
+        }
+      }
+
+      async function fetchMasterContent(forceRefresh) {
         if (!API_URL) throw new Error("NO_API_URL");
-        const res = await fetch(`${API_URL}?action=getActivities&_ts=${Date.now()}`);
+        if (!state.session || !state.session.email) {
+          forceLogout(t("errDeviceCleared"));
+          throw new Error("UNAUTHORIZED");
+        }
+
+        const now = Date.now();
+        if (!forceRefresh && state.masterFetchedAt && (now - state.masterFetchedAt < CLIENT_CACHE_MS) && Array.isArray(state.master.topics) && state.master.topics.length > 0) {
+          return state.master;
+        }
+
+        const email = encodeURIComponent(state.session.email);
+        const devId = encodeURIComponent(getDeviceId());
+        const res = await fetch(`${API_URL}?action=getActivities&email=${email}&device_id=${devId}&_ts=${now}`);
         if (!res.ok) throw new Error("HTTP_" + res.status);
         const data = await res.json();
-        if (!data || data.success === false) throw new Error("API_ERR");
+
+        if (!data || data.success === false) {
+          if (data && data.unauthorized) {
+            forceLogout(t("errDeviceCleared"));
+          }
+          throw new Error("API_ERR");
+        }
+
+        if (data.teacher) {
+          state.session = { ...state.session, ...data.teacher };
+          safeSet(STORAGE_KEYS.SESSION, JSON.stringify(state.session));
+        }
 
         state.master = {
           today_date: data.today_date || "",
@@ -1703,7 +1742,9 @@
           special_days: Array.isArray(data.special_days) ? data.special_days : [],
           today_special: Array.isArray(data.today_special) ? data.today_special : []
         };
+        state.masterFetchedAt = now;
         updateHomeView();
+        renderTypeSuggestions(document.getElementById("chatInput").value);
         return state.master;
       }
 
@@ -1722,19 +1763,6 @@
             updateHomeView();
           }
         } catch (e) {}
-      }
-
-      function forceLogout(alertMsg) {
-        safeRemove(STORAGE_KEYS.SESSION);
-        state.session = null;
-        document.getElementById("appView").classList.add("hidden");
-        document.getElementById("loginView").classList.remove("hidden");
-        updateInstallBannerUI();
-        if (alertMsg) {
-          const fb = document.getElementById("loginFeedback");
-          fb.textContent = alertMsg;
-          fb.classList.remove("hidden");
-        }
       }
 
       function renderTopicRowCardHTML(row) {
@@ -1917,7 +1945,7 @@
         pushChat({ role: "user", type: "text", text, time: formatTime(new Date()) });
 
         try {
-          const data = await fetchMasterContent();
+          const data = await fetchMasterContent(false);
           const replyTime = formatTime(new Date());
           const cmd = text.toLowerCase().replace(/\s+/g, " ");
 
@@ -1950,6 +1978,7 @@
             }
           }
         } catch (err) {
+          if (err && err.message === "UNAUTHORIZED") return;
           pushChat({ role: "bot", type: "text", textKn: I18N.kn.backendError, textEn: I18N.en.backendError, time: formatTime(new Date()) });
         } finally {
           state.isSendingChat = false;
@@ -2186,7 +2215,7 @@
         updateHomeView();
         renderChatHistory();
         switchTab("home");
-        fetchMasterContent().catch(() => {});
+        fetchMasterContent(true).catch(() => {});
         verifyLiveDeviceOrLogout();
       }
 

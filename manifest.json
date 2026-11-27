@@ -1,0 +1,25 @@
+{
+  "name": "InstaLab",
+  "short_name": "InstaLab",
+  "description": "ಪ್ರಾಯೋಗಿಕ ವಿಜ್ಞಾನ ಕಲಿಕೆಯ ಹೊಸ ಹೆಜ್ಜೆ • Practical Science Learning",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#078B82",
+  "icons": [
+    {
+      "src": "./assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>InstaLab • Practical Science Learning</title>
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" href="./assets/icon-192.png" />
+  <link rel="apple-touch-icon" href="./assets/icon-192.png" />
+  <script src="./app-config.js"></script>
+  <style>
+    :root {
+      --bg-page: #ffffff;
+      --surface: #ffffff;
+      --surface-subtle: #f8fafb;
+      --border: #e2e8f0;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --text-muted: #6b7280;
+      --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+
+      /* 1. Teal (#078B82) */
+      --accent: #078B82;
+      --accent-hover: #06736b;
+      --accent-soft: rgba(7, 139, 130, 0.10);
+      --accent-border: rgba(7, 139, 130, 0.30);
+      --welcome-grad: linear-gradient(135deg, #05665f 0%, #078B82 55%, #0ea59b 100%);
+      --chat-in-bg: #f1f8f7;
+    }
+
+    body[data-theme="blue"] {
+      --accent: #2878D0;
+      --accent-hover: #1f63ad;
+      --accent-soft: rgba(40, 120, 208, 0.10);
+      --accent-border: rgba(40, 120, 208, 0.30);
+      --welcome-grad: linear-gradient(135deg, #1b5494 0%, #2878D0 55%, #4692e5 100%);
+      --chat-in-bg: #f1f6fc;
+    }
+
+    body[data-theme="purple"] {
+      --accent: #8054C7;
+      --accent-hover: #6941aa;
+      --accent-soft: rgba(128, 84, 199, 0.10);
+      --accent-border: rgba(128, 84, 199, 0.30);
+      --welcome-grad: linear-gradient(135deg, #56348c 0%, #8054C7 55%, #9b74dc 100%);
+      --chat-in-bg: #f5f2fb;
+    }
+
+    body[data-theme="orange"] {
+      --accent: #F29A35;
+      --accent-hover: #d88322;
+      --accent-soft: rgba(242, 154, 53, 0.12);
+      --accent-border: rgba(242, 154, 53, 0.35);
+      --welcome-grad: linear-gradient(135deg, #b86b14 0%, #F29A35 55%, #f6b05c 100%);
+      --chat-in-bg: #fdf7ef;
+    }
+
+    body[data-theme="pink"] {
+      --accent: #E75A91;
+      --accent-hover: #cc467a;
+      --accent-soft: rgba(231, 90, 145, 0.10);
+      --accent-border: rgba(231, 90, 145, 0.30);
+      --welcome-grad: linear-gradient(135deg, #a83361 0%, #E75A91 55%, #f07da9 100%);
+      --chat-in-bg: #fdf2f6;
+    }
+
+    body[data-theme="bw"] {
+      --accent: #202124;
+      --accent-hover: #000000;
+      --accent-soft: rgba(32, 33, 36, 0.08);
+      --accent-border: rgba(32, 33, 36, 0.35);
+      --welcome-grad: linear-gradient(135deg, #111214 0%, #202124 60%, #3c4043 100%);
+      --chat-in-bg: #f3f4f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Kannada", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      background: #ffffff !important;
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .hidden { display: none !important; }
+
+    #appView #installBanner,
+    #appView .install-banner {
+      display: none !important;
+    }
+
+    .theme-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .theme-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .theme-dot:hover { transform: scale(1.1); }
+    .theme-dot.active {
+      transform: scale(1.12);
+      box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--accent);
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px;
+    }
+
+    .lang-switch button {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .lang-switch button.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-danger-outline {
+      background: #ffffff;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      color: var(--text-primary);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .form-control:disabled,
+    .form-control[readonly] {
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+    }
+
+    /* Medium Pills */
+    .medium-pills {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .medium-pill {
+      border: 1.5px solid var(--border);
+      background: #ffffff;
+      color: var(--text-secondary);
+      border-radius: 10px;
+      padding: 9px 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .medium-pill.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    /* Login */
+    #loginView {
+      min-height: 100vh;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 16px 28px;
+    }
+
+    .login-topbar {
+      width: 100%;
+      max-width: 460px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .login-center {
+      width: 100%;
+      max-width: 440px;
+      margin: auto 0;
+      padding: 18px 0;
+    }
+
+    .brand-block { text-align: center; margin-bottom: 18px; }
+    .brand-logo-wrap {
+      width: 150px;
+      height: 76px;
+      margin: 0 auto 12px;
+      border-radius: 14px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+    }
+    .brand-logo-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .brand-title { font-size: 28px; font-weight: 800; }
+    .brand-tagline { font-size: 14px; font-weight: 600; color: var(--accent); margin-top: 3px; }
+    .brand-intro { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+    .install-banner {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .login-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px 20px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .alert-box {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .alert-error { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
+    .alert-success { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+
+    /* App Shell */
+    #appView {
+      min-height: 100vh;
+      background: #ffffff;
+      padding-bottom: 84px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 14px 16px;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .header-logo {
+      width: 96px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      object-fit: contain;
+      background: #ffffff;
+    }
+
+    /* Black & White theme only: rectangle logo container background turns black */
+    body[data-theme="bw"] .brand-logo-wrap,
+    body[data-theme="bw"] .header-logo {
+      background: #111214;
+      border-color: #202124;
+      border-radius: 12px;
+    }
+
+    .header-title { font-size: 18px; font-weight: 800; }
+    .header-school {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 0;
+      flex-wrap: wrap;
+    }
+
+    /* Home: Today's Special + School + 2-Line Wish */
+    #tabHome {
+      padding: 8px 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .welcome-card {
+      width: 100%;
+      background: var(--welcome-grad);
+      color: #ffffff;
+      border-radius: var(--radius-xl);
+      padding: 28px 22px;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+    }
+
+    .welcome-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .welcome-greeting { font-size: 24px; font-weight: 800; line-height: 1.25; margin-bottom: 4px; }
+    .welcome-school-line { font-size: 14px; font-weight: 600; opacity: 0.94; margin-bottom: 14px; }
+    .welcome-divider { width: 52px; height: 3px; background: rgba(255, 255, 255, 0.45); border-radius: 999px; margin: 0 auto 14px; }
+    .welcome-wish-2line { font-size: 15px; font-weight: 600; line-height: 1.55; opacity: 0.98; max-width: 540px; margin: 0 auto; white-space: pre-line; }
+
+    .today-home-card {
+      background: #ffffff;
+      border: 1.5px solid var(--accent-border);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .today-home-title {
+      font-size: 16.5px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .today-home-wish {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
+    .resource-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .res-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 10px;
+      padding: 8px 13px;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .res-btn.see { background: var(--accent); color: #ffffff; }
+    .res-btn.download { background: #111827; color: #ffffff; }
+    .res-btn.locked {
+      background: #f3f4f6;
+      color: #9ca3af;
+      border: 1px solid #e5e7eb;
+      cursor: not-allowed;
+    }
+
+    /* Chat Tab */
+    .chat-shell {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 205px);
+      min-height: 450px;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+
+    .chat-assistant-meta { display: flex; align-items: center; gap: 10px; }
+    .chat-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+    }
+    .chat-avatar img { width: 100%; height: 100%; object-fit: contain; }
+    .chat-name { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+    .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block; }
+    .chat-subtitle { font-size: 12px; color: var(--text-muted); }
+
+    .chat-quick-bar {
+      display: flex;
+      gap: 8px;
+      padding: 8px 14px;
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .quick-chip {
+      background: #ffffff;
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .quick-chip:hover { background: var(--accent); color: #ffffff; }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #ffffff;
+    }
+
+    .msg-row { display: flex; flex-direction: column; max-width: 92%; }
+    .msg-row.user { align-self: flex-end; }
+    .msg-row.bot { align-self: flex-start; }
+
+    .msg-bubble {
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .msg-row.user .msg-bubble {
+      background: var(--accent);
+      color: #ffffff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg-row.bot .msg-bubble {
+      background: var(--chat-in-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      padding: 0 4px;
+    }
+    .msg-row.user .msg-time { text-align: right; }
+
+    .row-result-card {
+      margin-top: 10px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 13px;
+      padding: 12px;
+    }
+
+    .row-result-title { font-size: 14.5px; font-weight: 800; color: var(--text-primary); margin-bottom: 2px; }
+    .row-result-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+
+    .chat-composer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+    }
+
+    .chat-composer input {
+      flex: 1;
+      background: var(--surface-subtle);
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-size: 14.5px;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .chat-composer input:focus { background: #ffffff; border-color: var(--accent); }
+    .chat-send-btn { width: 44px; height: 44px; border-radius: 50%; padding: 0; flex-shrink: 0; }
+
+    /* Profile Tab */
+    .profile-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .profile-avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .profile-actions { display: flex; gap: 10px; margin-top: 16px; margin-bottom: 14px; }
+    .profile-actions > button { flex: 1; }
+
+    /* Bottom Nav: Chat (First) -> Home (Middle) -> Profile (Last) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.04);
+      z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .bottom-nav-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 6px 10px;
+      gap: 6px;
+    }
+
+    .nav-item {
+      background: transparent;
+      border: none;
+      border-radius: 14px;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-item.active { background: var(--accent-soft); color: var(--accent); }
+
+    /* Protected Viewer Modal ("See") */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      z-index: 250;
+    }
+
+    .viewer-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 880px;
+      height: 86vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      user-select: none;
+    }
+
+    .viewer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+
+    .viewer-frame { flex: 1; width: 100%; border: none; background: #ffffff; }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      max-width: 380px;
+      width: 100%;
+      padding: 22px 20px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+    }
+
+    .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+    .modal-actions button { flex: 1; }
+  </style>
+</head>
+<body oncontextmenu="if(!document.getElementById('inAppViewerModal').classList.contains('hidden')) return false;">
+
+  <!-- ==================== 1. LOGIN VIEW (#loginView) ==================== -->
+  <main id="loginView">
+    <div class="login-topbar">
+      <div class="theme-dots" role="group" aria-label="Theme Colour Selector">
+        <button type="button" class="theme-dot active" data-theme-choice="teal" style="background:#078B82;" aria-label="Teal"></button>
+        <button type="button" class="theme-dot" data-theme-choice="blue" style="background:#2878D0;" aria-label="Blue"></button>
+        <button type="button" class="theme-dot" data-theme-choice="purple" style="background:#8054C7;" aria-label="Purple"></button>
+        <button type="button" class="theme-dot" data-theme-choice="orange" style="background:#F29A35;" aria-label="Orange"></button>
+        <button type="button" class="theme-dot" data-theme-choice="pink" style="background:#E75A91;" aria-label="Pink"></button>
+        <button type="button" class="theme-dot" data-theme-choice="bw" style="background:#202124;" aria-label="Black and White"></button>
+      </div>
+      <div class="lang-switch" role="group" aria-label="Language Selector">
+        <button type="button" data-lang-choice="kn" class="active">ಕನ್ನಡ</button>
+        <button type="button" data-lang-choice="en">EN</button>
+      </div>
+    </div>
+
+    <div class="login-center">
+      <div class="brand-block">
+        <div class="brand-logo-wrap">
+          <img id="loginBrandLogo" src="./assets/logo-kn.png" alt="InstaLab Logo" onerror="this.src='./assets/icon-192.png'" />
+        </div>
+        <h1 class="brand-title">InstaLab</h1>
+        <p class="brand-tagline" data-i18n="tagline">Practical Science Learning</p>
+        <p class="brand-intro" data-i18n="intro">Discover, Explore, Experiment, Learn</p>
+      </div>
+
+      <div id="installBanner" class="install-banner hidden" role="region" aria-label="Install InstaLab">
+        <div style="font-size:12.5px;line-height:1.4;" id="installBannerMsg"></div>
+        <button type="button" id="installAppBtn" class="btn-primary" style="padding:8px 14px;font-size:12.5px;white-space:nowrap;"></button>
+      </div>
+
+      <section class="login-card">
+        <h2 style="font-size:19px;font-weight:800;margin-bottom:4px;" data-i18n="loginTitle">ಶಿಕ್ಷಕರ ಪ್ರವೇಶ</h2>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:18px;" data-i18n="loginSub">ನೋಂದಾಯಿತ Email ID ಮೂಲಕ ಪ್ರವೇಶಿಸಿ</p>
+
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="loginEmail" data-i18n="labelEmail">Email ID</label>
+            <input id="loginEmail" class="form-control" type="email" autocomplete="email" required />
+          </div>
+
+          <div class="form-group">
+            <label data-i18n="labelMedium">Medium / ಮಾಧ್ಯಮ</label>
+            <div class="medium-pills" id="loginMediumGroup">
+              <button type="button" class="medium-pill" data-med="Kannada">ಕನ್ನಡ ಮಾಧ್ಯಮ</button>
+              <button type="button" class="medium-pill" data-med="English">English Medium</button>
+              <button type="button" class="medium-pill active" data-med="Both">Both / ಎರಡೂ</button>
+            </div>
+          </div>
+
+          <button type="submit" id="loginSubmitBtn" class="btn-primary" style="width:100%;" data-i18n="btnUnlock">
+            Unlock / ಪ್ರವೇಶಿಸಿ
+          </button>
+
+          <div id="loginFeedback" class="alert-box alert-error hidden" role="alert"></div>
+        </form>
+      </section>
+    </div>
+
+    <footer style="font-size:12px;color:var(--text-muted);text-align:center;">
+      InstaLab • Simple for Teachers. Powerful for Science Learning.
+    </footer>
+  </main>
+
+  <!-- ==================== 2. APPLICATION DASHBOARD (#appView) ==================== -->
+  <div id="appView" class="hidden">
+    <div class="app-container">
+      <header class="app-header">
+        <div class="header-brand">
+          <img id="dashBrandLogo" class="header-logo" src="./assets/logo-kn.png" alt="InstaLab" onerror="this.src='./assets/icon-192.png'" />
+          <div>
+            <div class="header-title">InstaLab</div>
+            <div class="header-school" id="headerSchoolName">School Name</div>
+          </div>
+        </div>
+        <div class="lang-switch" role="group" aria-label="Language Selector">
+          <button type="button" data-lang-choice="kn" class="active">ಕನ್ನಡ</button>
+          <button type="button" data-lang-choice="en">EN</button>
+        </div>
+      </header>
+
+      <div class="header-controls">
+        <div class="theme-dots" role="group" aria-label="Theme Colour Selector">
+          <button type="button" class="theme-dot active" data-theme-choice="teal" style="background:#078B82;" aria-label="Teal"></button>
+          <button type="button" class="theme-dot" data-theme-choice="blue" style="background:#2878D0;" aria-label="Blue"></button>
+          <button type="button" class="theme-dot" data-theme-choice="purple" style="background:#8054C7;" aria-label="Purple"></button>
+          <button type="button" class="theme-dot" data-theme-choice="orange" style="background:#F29A35;" aria-label="Orange"></button>
+          <button type="button" class="theme-dot" data-theme-choice="pink" style="background:#E75A91;" aria-label="Pink"></button>
+          <button type="button" class="theme-dot" data-theme-choice="bw" style="background:#202124;" aria-label="Black and White"></button>
+        </div>
+      </div>
+
+      <!-- TAB 1: CHAT (#tabChat) -->
+      <section id="tabChat" class="hidden" aria-label="Chat Assistant">
+        <div class="chat-shell">
+          <div class="chat-header">
+            <div class="chat-assistant-meta">
+              <div class="chat-avatar">
+                <img src="./assets/icon-192.png" alt="InstaLab Assistant" />
+              </div>
+              <div>
+                <div class="chat-name">
+                  <span>InstaLab Assistant</span>
+                  <span class="online-dot"></span>
+                </div>
+                <div class="chat-subtitle" data-i18n="assistantSub">Your Science Learning Assistant</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-quick-bar">
+            <button type="button" class="quick-chip" data-quick-cmd="Today's Special" data-i18n="chipToday">Today's Special</button>
+            <button type="button" class="quick-chip" data-quick-cmd="All Topics" data-i18n="chipAllTopics">All Topics</button>
+          </div>
+
+          <div id="chatMessages" class="chat-messages" role="log" aria-live="polite"></div>
+
+          <form id="chatForm" class="chat-composer">
+            <input id="chatInput" type="text" autocomplete="off" required />
+            <button type="submit" id="chatSendBtn" class="btn-primary chat-send-btn" aria-label="Send">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 2: HOME (#tabHome - Middle Tab, Opens First) -->
+      <section id="tabHome" aria-label="Home">
+        <div class="welcome-card">
+          <div class="welcome-badge">InstaLab</div>
+          <h2 class="welcome-greeting" id="dynamicGreeting">ನಮಸ್ಕಾರ ಶಿಕ್ಷಕರೇ!</h2>
+          <p class="welcome-school-line" id="welcomeSchoolLine"></p>
+          <div class="welcome-divider"></div>
+          <p class="welcome-wish-2line" id="welcome2LineWish">
+            ವಿಜ್ಞಾನವನ್ನು ನೋಡಿ, ಮಾಡಿ, ಅನುಭವಿಸಿ ಕಲಿಯೋಣ!
+            ಪ್ರತಿ ಪ್ರಯೋಗವೂ ಮಕ್ಕಳಲ್ಲಿ ಹೊಸ ಕುತೂಹಲವನ್ನು ಬೆಳೆಸುತ್ತದೆ.
+          </p>
+        </div>
+
+        <div id="homeTodayCard" class="today-home-card hidden">
+          <div class="today-home-title" id="homeTodayTitle"></div>
+          <p class="today-home-wish" id="homeTodayWish"></p>
+          <div class="resource-btn-row" id="homeTodayButtons"></div>
+        </div>
+      </section>
+
+      <!-- TAB 3: PROFILE (#tabProfile) -->
+      <section id="tabProfile" class="hidden" aria-label="Teacher Profile">
+        <div class="profile-card">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="5"></circle>
+                <path d="M20 21a8 8 0 0 0-16 0"></path>
+              </svg>
+            </div>
+            <div>
+              <h2 style="font-size:18px;font-weight:800;" data-i18n="profileHeading">Teacher Profile</h2>
+              <p style="font-size:13px;color:var(--text-muted);" id="profileSummarySchool"></p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="profNameInput" data-i18n="labelName">Teacher Name</label>
+            <input id="profNameInput" class="form-control" type="text" disabled />
+          </div>
+          <div class="form-group">
+            <label for="profSchoolInput" data-i18n="labelSchool">School Name</label>
+            <input id="profSchoolInput" class="form-control" type="text" disabled />
+          </div>
+          <div class="form-group">
+            <label for="profMediumSelect" data-i18n="labelMedium">Medium / ಮಾಧ್ಯಮ</label>
+            <select id="profMediumSelect" class="form-control" disabled>
+              <option value="Kannada">ಕನ್ನಡ ಮಾಧ್ಯಮ (Kannada)</option>
+              <option value="English">English Medium</option>
+              <option value="Both">Both / ಎರಡೂ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="profEmailInput" data-i18n="labelEmail">Email ID</label>
+            <input id="profEmailInput" class="form-control" type="email" readonly disabled />
+          </div>
+          <div class="form-group">
+            <label>Device ID</label>
+            <input id="profDeviceInput" class="form-control" type="text" readonly disabled />
+          </div>
+
+          <div class="profile-actions">
+            <button type="button" id="editProfileBtn" class="btn-primary" data-i18n="btnEditProfile">Edit Profile</button>
+            <button type="button" id="saveProfileBtn" class="btn-primary hidden" data-i18n="btnSaveChanges">Save Changes</button>
+            <button type="button" id="cancelProfileBtn" class="btn-secondary hidden" data-i18n="btnCancel">Cancel</button>
+          </div>
+
+          <div id="profileFeedback" class="alert-box alert-success hidden" role="status"></div>
+
+          <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border);">
+            <button type="button" id="logoutTriggerBtn" class="btn-danger-outline" data-i18n="btnLogout">Logout</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- FIXED BOTTOM NAVIGATION: CHAT (1st) -> HOME (Middle) -> PROFILE (Last) -->
+    <nav class="bottom-nav" aria-label="Primary Navigation">
+      <div class="bottom-nav-inner">
+        <button type="button" class="nav-item" data-tab="chat">
+          <svg viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+          <span data-i18n="navChat">Chat</span>
+        </button>
+        <button type="button" class="nav-item active" data-tab="home">
+          <svg viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span data-i18n="navHome">Home</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="profile">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+          <span data-i18n="navProfile">Profile</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- PROTECTED IN-APP VIEWER ("See" — blocks Ctrl+U, Ctrl+S, Ctrl+P, Right-Click) -->
+  <div id="inAppViewerModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" oncontextmenu="return false;">
+    <div class="viewer-card" oncontextmenu="return false;">
+      <div class="viewer-bar">
+        <strong id="viewerModalTitle" style="font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">InstaLab Viewer</strong>
+        <button type="button" id="closeViewerBtn" class="btn-secondary" style="padding:6px 12px;font-size:12.5px;" data-i18n="btnClose">Close</button>
+      </div>
+      <iframe id="viewerIframe" class="viewer-frame" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="no-referrer"></iframe>
+    </div>
+  </div>
+
+  <!-- LOGOUT CONFIRMATION DIALOG -->
+  <div id="logoutModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h3 style="font-size:17px;font-weight:800;margin-bottom:6px;" data-i18n="logoutConfirmTitle">Confirm Logout</h3>
+      <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.45;" data-i18n="logoutConfirmBody">
+        Are you sure you want to log out of InstaLab?
+      </p>
+      <div class="modal-actions">
+        <button type="button" id="cancelLogoutBtn" class="btn-secondary" data-i18n="btnCancel">Cancel</button>
+        <button type="button" id="confirmLogoutBtn" class="btn-primary" style="background:#dc2626;" data-i18n="btnLogout">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function InstaLabApp() {
+      "use strict";
+
+      const APP_CFG = window.INSTALAB_APP_CONFIG || {};
+      const API_URL = APP_CFG.SHEET_WEB_APP_URL || "";
+
+      const STORAGE_KEYS = {
+        THEME: "instalab_v2_theme",
+        LANG: "instalab_v2_lang",
+        SESSION: "instalab_v2_session",
+        DEVICE_ID: "instalab_v2_device_id",
+        CHAT_PREFIX: "instalab_v2_chat_"
+      };
+
+      const I18N = {
+        kn: {
+          tagline: "ಪ್ರಾಯೋಗಿಕ ವಿಜ್ಞಾನ ಕಲಿಕೆ",
+          intro: "ಅನ್ವೇಷಿಸಿ • ಪ್ರಯೋಗಿಸಿ • ಅನುಭವಿಸಿ • ಕಲಿಯಿರಿ",
+          loginTitle: "ಶಿಕ್ಷಕರ ಪ್ರವೇಶ",
+          loginSub: "ನೋಂದಾಯಿತ Email ID ಮತ್ತು ಮಾಧ್ಯಮ ಆಯ್ಕೆ ಮಾಡಿ",
+          labelName: "ಶಿಕ್ಷಕರ ಹೆಸರು",
+          labelSchool: "ಶಾಲೆಯ ಹೆಸರು",
+          labelEmail: "ಇಮೇಲ್ ಐಡಿ",
+          labelMedium: "ಮಾಧ್ಯಮ / Medium",
+          phEmail: "teacher@school.edu.in",
+          btnUnlock: "Unlock / ಪ್ರವೇಶಿಸಿ",
+          loggingIn: "ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...",
+          errEmail: "ದಯವಿಟ್ಟು ಸರಿಯಾದ ಇಮೇಲ್ ಐಡಿ ನಮೂದಿಸಿ.",
+          errAuth: "ಈ Email ID ನೋಂದಾಯಿಸಲಾಗಿಲ್ಲ ಅಥವಾ ಡಿವೈಸ್ ಮಿತಿ ಪೂರ್ಣವಾಗಿದೆ.",
+          errDeviceCleared: "ನಿರ್ವಾಹಕರು ಈ ಡಿವೈಸ್ ಅನ್ನು ಮರುಹೊಂದಿಸಿದ್ದಾರೆ (Reset). ದಯವಿಟ್ಟು ಮತ್ತೆ ಲಾಗಿನ್ ಮಾಡಿ.",
+          errBackendMissing: "app-config.js ನಲ್ಲಿ SHEET_WEB_APP_URL ಹೊಂದಿಸಲಾಗಿಲ್ಲ.",
+          installPrompt: "ತ್ವರಿತ ಪ್ರವೇಶಕ್ಕಾಗಿ InstaLab ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ",
+          installBtn: "Install App",
+          installManual: "ಬ್ರೌಸರ್ ಮೆನು (⋮ / Share) ತೆರೆದು 'Add to Home Screen' ಆಯ್ಕೆ ಮಾಡಿ.",
+          wish2LineDefault: "ವಿಜ್ಞಾನವನ್ನು ನೋಡಿ, ಮಾಡಿ, ಅನುಭವಿಸಿ ಕಲಿಯೋಣ!\nಪ್ರತಿ ಪ್ರಯೋಗವೂ ಮಕ್ಕಳಲ್ಲಿ ಹೊಸ ಕುತೂಹಲವನ್ನು ಬೆಳೆಸುತ್ತದೆ.",
+          greetMorning: "ಶುಭೋದಯ ಶಿಕ್ಷಕರೇ!",
+          greetAfternoon: "ಶುಭ ಮಧ್ಯಾಹ್ನ ಶಿಕ್ಷಕರೇ!",
+          greetEvening: "ಶುಭ ಸಂಜೆ ಶಿಕ್ಷಕರೇ!",
+          greetNight: "ನಮಸ್ಕಾರ ಶಿಕ್ಷಕರೇ!",
+          navHome: "ಮುಖಪುಟ",
+          navChat: "ಚಾಟ್",
+          navProfile: "ಪ್ರೊಫೈಲ್",
+          assistantSub: "ನಿಮ್ಮ ವಿಜ್ಞಾನ ಕಲಿಕಾ ಸಹಾಯಕ",
+          chatPlaceholder: "'today' ಅಥವಾ ವಿಷಯದ ಅಕ್ಷರ/ಪದ ಟೈಪ್ ಮಾಡಿ (ಉದಾ: heat / ಉಷ್ಣ)...",
+          chipToday: "ಇಂದಿನ ವಿಶೇಷ",
+          chipAllTopics: "ಎಲ್ಲಾ ವಿಷಯಗಳು",
+          chatWelcome: "ನಮಸ್ಕಾರ ಶಿಕ್ಷಕರೇ! ವಿಷಯದ ಯಾವುದೇ ಅಕ್ಷರ ಅಥವಾ ಪದ (ಉದಾ: heat / ಲೋಲಕ) ಟೈಪ್ ಮಾಡಿದರೆ ಆ ಸಾಲಿನ PPT, Simulation, Worksheet ಎಲ್ಲವೂ ಬರುತ್ತವೆ.",
+          todayHeading: "ಇಂದಿನ ವಿಶೇಷ • Today's Special",
+          noTodaySpecial: "ಇಂದಿನ ದಿನಾಂಕಕ್ಕೆ Special_Days ನಲ್ಲಿ ಯಾವುದೇ Active ಚಟುವಟಿಕೆ ಇಲ್ಲ.",
+          resultsHeading: "ಹುಡುಕಾಟ ಫಲಿತಾಂಶಗಳು",
+          noMatch: "ನಿಮ್ಮ ಮಾಧ್ಯಮಕ್ಕೆ ಹೊಂದುವ ಯಾವುದೇ ಚಟುವಟಿಕೆ ಸಿಕ್ಕಿಲ್ಲ.",
+          backendError: "Google Sheet ಡೇಟಾ ಪಡೆಯಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+          btnSee: "ನೋಡಿ (See)",
+          btnDownload: "ಡೌನ್‌ಲೋಡ್",
+          btnNoAccess: "ಅನುಮತಿ ಇಲ್ಲ (No Access)",
+          btnClose: "ಮುಚ್ಚಿ",
+          profileHeading: "ಶಿಕ್ಷಕರ ಪ್ರೊಫೈಲ್",
+          btnEditProfile: "ಪ್ರೊಫೈಲ್ ತಿದ್ದುಪಡಿ",
+          btnSaveChanges: "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
+          btnCancel: "ರದ್ದುಮಾಡಿ",
+          btnLogout: "ಲಾಗ್ ಔಟ್",
+          profileSaved: "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ವಿವರಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ.",
+          profileErr: "ಹೆಸರು ಮತ್ತು ಶಾಲೆಯ ಹೆಸರು ಖಾಲಿ ಇರಬಾರದು.",
+          logoutConfirmTitle: "ಲಾಗ್ ಔಟ್ ದೃಢೀಕರಿಸಿ",
+          logoutConfirmBody: "ನೀವು InstaLab ನಿಂದ ಲಾಗ್ ಔಟ್ ಆಗಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?"
+        },
+        en: {
+          tagline: "Practical Science Learning",
+          intro: "Discover, Explore, Experiment, Learn",
+          loginTitle: "Teacher Login",
+          loginSub: "Enter registered Email ID and select Medium",
+          labelName: "Teacher Name",
+          labelSchool: "School Name",
+          labelEmail: "Email ID",
+          labelMedium: "Medium",
+          phEmail: "teacher@school.edu.in",
+          btnUnlock: "Unlock / ಪ್ರವೇಶಿಸಿ",
+          loggingIn: "Verifying...",
+          errEmail: "Please enter a valid Email ID.",
+          errAuth: "Email ID not authorized or max device limit reached.",
+          errDeviceCleared: "This device was reset by admin. Please log in again.",
+          errBackendMissing: "SHEET_WEB_APP_URL is not configured in app-config.js.",
+          installPrompt: "Install InstaLab App for quick classroom access",
+          installBtn: "Install App",
+          installManual: "Open browser menu (⋮ / Share) and tap 'Add to Home Screen'.",
+          wish2LineDefault: "Discover, Explore, and Experience Science!\nEvery hands-on experiment sparks curiosity in young minds.",
+          greetMorning: "Good Morning",
+          greetAfternoon: "Good Afternoon",
+          greetEvening: "Good Evening",
+          greetNight: "Welcome",
+          navHome: "Home",
+          navChat: "Chat",
+          navProfile: "Profile",
+          assistantSub: "Your Science Learning Assistant",
+          chatPlaceholder: "Type 'today' or any topic letter/word (e.g., heat, pendulum)...",
+          chipToday: "Today's Special",
+          chipAllTopics: "All Topics",
+          chatWelcome: "Hello Teacher! Type any topic word (e.g. heat, pendulum) to view all row resources (PPT, Simulation, Worksheet).",
+          todayHeading: "Today's Special",
+          noTodaySpecial: "No Active special day activity scheduled for today's date.",
+          resultsHeading: "Matching Topics",
+          noMatch: "No matching Active topic found for your selected medium.",
+          backendError: "Unable to connect to Google Sheet right now. Please try again.",
+          btnSee: "See",
+          btnDownload: "Download",
+          btnNoAccess: "No Access",
+          btnClose: "Close",
+          profileHeading: "Teacher Profile",
+          btnEditProfile: "Edit Profile",
+          btnSaveChanges: "Save Changes",
+          btnCancel: "Cancel",
+          btnLogout: "Logout",
+          profileSaved: "Profile changes saved successfully.",
+          profileErr: "Teacher Name and School Name cannot be empty.",
+          logoutConfirmTitle: "Confirm Logout",
+          logoutConfirmBody: "Are you sure you want to log out of InstaLab?"
+        }
+      };
+
+      const state = {
+        theme: safeGet(STORAGE_KEYS.THEME) || APP_CFG.DEFAULT_THEME || "teal",
+        lang: safeGet(STORAGE_KEYS.LANG) || "kn",
+        selectedLoginMedium: "Both",
+        session: safeGetJSON(STORAGE_KEYS.SESSION),
+        isLoggingIn: false,
+        isSendingChat: false,
+        deferredPrompt: null,
+        master: { topics: [], special_days: [], today_special: [] }
+      };
+
+      function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+      function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+      function safeRemove(k) { try { localStorage.removeItem(k); } catch (e) {} }
+      function safeGetJSON(k) { try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+      function t(k) { return (I18N[state.lang] && I18N[state.lang][k]) || I18N.en[k] || k; }
+      function esc(s) {
+        return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      }
+      function formatTime(d) {
+        return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+      }
+
+      /* Block Ctrl+U, Ctrl+S, Ctrl+P globally & inside viewer */
+      document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && ["u", "s", "p"].includes(e.key.toLowerCase())) {
+          e.preventDefault();
+        }
+      });
+
+      function getDeviceId() {
+        let id = safeGet(STORAGE_KEYS.DEVICE_ID);
+        if (!id) {
+          const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+          let code = "DEV-";
+          for (let i = 0; i < 6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+          id = code;
+          safeSet(STORAGE_KEYS.DEVICE_ID, id);
+        }
+        return id;
+      }
+
+      /* Theme & Language */
+      function applyTheme(theme) {
+        const valid = ["teal", "blue", "purple", "orange", "pink", "bw"];
+        const chosen = valid.includes(theme) ? theme : "teal";
+        state.theme = chosen;
+        if (chosen === "teal") document.body.removeAttribute("data-theme");
+        else document.body.setAttribute("data-theme", chosen);
+        safeSet(STORAGE_KEYS.THEME, chosen);
+        document.querySelectorAll("[data-theme-choice]").forEach(b => {
+          b.classList.toggle("active", b.getAttribute("data-theme-choice") === chosen);
+        });
+      }
+
+      function applyLanguage(lang) {
+        state.lang = lang === "en" ? "en" : "kn";
+        safeSet(STORAGE_KEYS.LANG, state.lang);
+        document.documentElement.lang = state.lang;
+
+        const logoPath = state.lang === "kn"
+          ? ((APP_CFG.LOGOS && APP_CFG.LOGOS.kn) || "./assets/logo-kn.png")
+          : ((APP_CFG.LOGOS && APP_CFG.LOGOS.en) || "./assets/logo-en.png");
+        document.getElementById("loginBrandLogo").src = logoPath;
+        document.getElementById("dashBrandLogo").src = logoPath;
+
+        document.querySelectorAll("[data-lang-choice]").forEach(b => {
+          b.classList.toggle("active", b.getAttribute("data-lang-choice") === state.lang);
+        });
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+          el.textContent = t(el.getAttribute("data-i18n"));
+        });
+
+        document.getElementById("loginEmail").placeholder = t("phEmail");
+        document.getElementById("chatInput").placeholder = t("chatPlaceholder");
+
+        updateInstallBannerUI();
+        updateHomeView();
+        renderChatHistory();
+      }
+
+      /* Install Banner ONLY before login */
+      function updateInstallBannerUI() {
+        const banner = document.getElementById("installBanner");
+        const msgEl = document.getElementById("installBannerMsg");
+        const btnEl = document.getElementById("installAppBtn");
+        const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+
+        if (state.session || standalone) {
+          banner.classList.add("hidden");
+          return;
+        }
+        if (state.deferredPrompt) {
+          msgEl.textContent = t("installPrompt");
+          btnEl.textContent = t("installBtn");
+          btnEl.classList.remove("hidden");
+          banner.classList.remove("hidden");
+        } else if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+          msgEl.textContent = t("installManual");
+          btnEl.classList.add("hidden");
+          banner.classList.remove("hidden");
+        } else {
+          banner.classList.add("hidden");
+        }
+      }
+
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        state.deferredPrompt = e;
+        updateInstallBannerUI();
+      });
+
+      document.getElementById("installAppBtn").addEventListener("click", async () => {
+        if (!state.deferredPrompt || state.session) return;
+        state.deferredPrompt.prompt();
+        await state.deferredPrompt.userChoice;
+        state.deferredPrompt = null;
+        updateInstallBannerUI();
+      });
+
+      function getSchoolName(sess) {
+        if (!sess) return "";
+        return state.lang === "kn"
+          ? (sess.school_kn || sess.school_en || "")
+          : (sess.school_en || sess.school_kn || "");
+      }
+
+      function matchesUserMedium(itemMedium) {
+        const userMed = (state.session && state.session.medium) ? state.session.medium.toLowerCase() : "both";
+        const rowMed = String(itemMedium || "both").trim().toLowerCase();
+        if (userMed === "both" || rowMed === "both") return true;
+        return userMed === rowMed;
+      }
+
+      /* Build Action Buttons: See / Download / No Access */
+      function buildResourceButtonHTML(label, link, access) {
+        const acc = String(access || "No Access").trim().toLowerCase();
+        const url = String(link || "").trim();
+
+        if (acc === "no access" || !url) {
+          return `<button type="button" class="res-btn locked" disabled>🔒 ${esc(label)}: ${esc(t("btnNoAccess"))}</button>`;
+        }
+        if (acc === "download") {
+          return `<a class="res-btn download" href="${esc(url)}" download target="_blank" rel="noopener noreferrer">⬇ ${esc(label)} (${esc(t("btnDownload"))})</a>`;
+        }
+        return `<button type="button" class="res-btn see" data-view-url="${esc(url)}" data-view-title="${esc(label)}">👁 ${esc(label)} (${esc(t("btnSee"))})</button>`;
+      }
+
+      function bindViewerButtons(rootEl) {
+        rootEl.querySelectorAll("[data-view-url]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            openProtectedViewer(btn.getAttribute("data-view-url"), btn.getAttribute("data-view-title"));
+          });
+        });
+      }
+
+      /* Update Home View: Greeting + School + 2-Line Wish + Today's Special Card */
+      function updateHomeView() {
+        const hr = new Date().getHours();
+        const greetKey = (hr >= 5 && hr < 12) ? "greetMorning"
+          : (hr >= 12 && hr < 17) ? "greetAfternoon"
+          : (hr >= 17 && hr < 21) ? "greetEvening" : "greetNight";
+
+        const teacherName = state.session ? state.session.name : "";
+        const schoolName = getSchoolName(state.session);
+
+        document.getElementById("dynamicGreeting").textContent = teacherName
+          ? `${t(greetKey)}, ${teacherName}`
+          : t(greetKey);
+        document.getElementById("welcomeSchoolLine").textContent = schoolName;
+        document.getElementById("headerSchoolName").textContent = schoolName;
+        document.getElementById("profileSummarySchool").textContent = schoolName;
+
+        const todayList = (state.master.today_special || []).filter(s => matchesUserMedium(s.medium));
+        const todayCard = document.getElementById("homeTodayCard");
+        const wishEl = document.getElementById("welcome2LineWish");
+
+        if (todayList.length > 0) {
+          const sp = todayList[0];
+          const evTitle = state.lang === "kn" ? sp.event_title_kn : sp.event_title_en;
+          const evWish = state.lang === "kn" ? sp.wish_kn : sp.wish_en;
+
+          wishEl.textContent = evWish || t("wish2LineDefault");
+          document.getElementById("homeTodayTitle").textContent = `✨ ${t("todayHeading")}: ${evTitle}`;
+          document.getElementById("homeTodayWish").textContent = evWish;
+
+          const btnsHTML = [
+            buildResourceButtonHTML("Simulation", sp.sim_link, sp.sim_access),
+            buildResourceButtonHTML("PDF / Guide", sp.pdf_link, sp.pdf_access)
+          ].join("");
+          const btnContainer = document.getElementById("homeTodayButtons");
+          btnContainer.innerHTML = btnsHTML;
+          bindViewerButtons(btnContainer);
+          todayCard.classList.remove("hidden");
+        } else {
+          wishEl.textContent = t("wish2LineDefault");
+          todayCard.classList.add("hidden");
+        }
+      }
+
+      /* Protected In-App Viewer ("See") */
+      function openProtectedViewer(url, title) {
+        const modal = document.getElementById("inAppViewerModal");
+        const iframe = document.getElementById("viewerIframe");
+        document.getElementById("viewerModalTitle").textContent = title || "InstaLab Viewer";
+        const cleanUrl = url.toLowerCase().includes(".pdf") && !url.includes("#") ? `${url}#toolbar=0&navpanes=0` : url;
+        iframe.src = cleanUrl;
+        modal.classList.remove("hidden");
+      }
+
+      document.getElementById("closeViewerBtn").addEventListener("click", () => {
+        document.getElementById("inAppViewerModal").classList.add("hidden");
+        document.getElementById("viewerIframe").src = "about:blank";
+      });
+
+      /* Fetch Master Content */
+      async function fetchMasterContent() {
+        if (!API_URL) throw new Error("NO_API_URL");
+        const res = await fetch(`${API_URL}?action=getActivities&_ts=${Date.now()}`);
+        if (!res.ok) throw new Error("HTTP_" + res.status);
+        const data = await res.json();
+        if (!data || data.success === false) throw new Error("API_ERR");
+
+        state.master = {
+          today_date: data.today_date || "",
+          topics: Array.isArray(data.topics) ? data.topics : [],
+          special_days: Array.isArray(data.special_days) ? data.special_days : [],
+          today_special: Array.isArray(data.today_special) ? data.today_special : []
+        };
+        updateHomeView();
+        return state.master;
+      }
+
+      /* Live Device Reset Check -> Auto Logout if Device_ID cleared in Sheet */
+      async function verifyLiveDeviceOrLogout() {
+        if (!state.session || !state.session.email || !API_URL) return;
+        const devId = getDeviceId();
+        try {
+          const res = await fetch(`${API_URL}?action=checkSession&email=${encodeURIComponent(state.session.email)}&device_id=${encodeURIComponent(devId)}&_ts=${Date.now()}`);
+          if (!res.ok) return;
+          const data = await res.json();
+          if (data && data.valid === false) {
+            forceLogout(t("errDeviceCleared"));
+          } else if (data && data.valid === true && data.teacher) {
+            state.session = { ...state.session, ...data.teacher };
+            safeSet(STORAGE_KEYS.SESSION, JSON.stringify(state.session));
+            updateHomeView();
+          }
+        } catch (e) {}
+      }
+
+      function forceLogout(alertMsg) {
+        safeRemove(STORAGE_KEYS.SESSION);
+        state.session = null;
+        document.getElementById("appView").classList.add("hidden");
+        document.getElementById("loginView").classList.remove("hidden");
+        updateInstallBannerUI();
+        if (alertMsg) {
+          const fb = document.getElementById("loginFeedback");
+          fb.textContent = alertMsg;
+          fb.classList.remove("hidden");
+        }
+      }
+
+      /* Row-Based Topic Card Renderer (PPT + Simulation + Worksheet + Extra in 1 card) */
+      function renderTopicRowCardHTML(row) {
+        const title = state.lang === "kn" ? (row.topic_name_kn || row.topic_name_en) : (row.topic_name_en || row.topic_name_kn);
+        const grade = state.lang === "kn" ? (row.grade_kn || row.grade_en) : (row.grade_en || row.grade_kn);
+
+        const buttons = [
+          buildResourceButtonHTML("PPT", row.ppt_link, row.ppt_access),
+          buildResourceButtonHTML("Simulation", row.sim_link, row.sim_access),
+          buildResourceButtonHTML("Worksheet", row.worksheet_link, row.worksheet_access),
+          row.extra_link || String(row.extra_access || "").toLowerCase() !== "no access"
+            ? buildResourceButtonHTML(row.extra_type || "Extra", row.extra_link, row.extra_access)
+            : ""
+        ].join("");
+
+        return `
+          <div class="row-result-card">
+            <div class="row-result-title">${row.topic_id ? `[${esc(row.topic_id)}] ` : ""}${esc(title)}</div>
+            ${grade ? `<div class="row-result-meta">${esc(grade)}</div>` : ""}
+            <div class="resource-btn-row">${buttons}</div>
+          </div>
+        `;
+      }
+
+      function renderSpecialCardHTML(sp) {
+        const title = state.lang === "kn" ? (sp.event_title_kn || sp.event_title_en) : (sp.event_title_en || sp.event_title_kn);
+        const wish = state.lang === "kn" ? (sp.wish_kn || sp.wish_en) : (sp.wish_en || sp.wish_kn);
+        const buttons = [
+          buildResourceButtonHTML("Simulation", sp.sim_link, sp.sim_access),
+          buildResourceButtonHTML("PDF / Guide", sp.pdf_link, sp.pdf_access)
+        ].join("");
+
+        return `
+          <div class="row-result-card">
+            <div class="row-result-title">${esc(title)}</div>
+            ${wish ? `<div class="row-result-meta" style="color:var(--text-secondary);margin-top:4px;">${esc(wish)}</div>` : ""}
+            <div class="resource-btn-row">${buttons}</div>
+          </div>
+        `;
+      }
+
+      /* Chat History & Search */
+      function getChatKey() {
+        const email = (state.session && state.session.email) ? state.session.email.toLowerCase() : "guest";
+        return STORAGE_KEYS.CHAT_PREFIX + email;
+      }
+
+      function loadChatHistory() {
+        const list = safeGetJSON(getChatKey());
+        return Array.isArray(list) ? list.slice(-50) : [];
+      }
+
+      function saveChatHistory(list) {
+        safeSet(getChatKey(), JSON.stringify(list.slice(-50)));
+      }
+
+      function renderChatHistory() {
+        const container = document.getElementById("chatMessages");
+        const history = loadChatHistory();
+
+        if (!history.length) {
+          saveChatHistory([{
+            role: "bot",
+            type: "text",
+            textKn: I18N.kn.chatWelcome,
+            textEn: I18N.en.chatWelcome,
+            time: formatTime(new Date())
+          }]);
+          return renderChatHistory();
+        }
+
+        container.innerHTML = history.map(msg => {
+          const isUser = msg.role === "user";
+          let inner = "";
+          if (msg.type === "topic_rows" && Array.isArray(msg.rows)) {
+            inner = `<div><strong>${esc(t("resultsHeading"))} (${msg.rows.length})</strong></div>` +
+              msg.rows.map(renderTopicRowCardHTML).join("");
+          } else if (msg.type === "special_rows" && Array.isArray(msg.rows)) {
+            inner = `<div><strong>${esc(t("todayHeading"))}</strong></div>` +
+              msg.rows.map(renderSpecialCardHTML).join("");
+          } else {
+            const txt = isUser ? msg.text : (state.lang === "kn" ? (msg.textKn || msg.text) : (msg.textEn || msg.text));
+            inner = `<div>${esc(txt)}</div>`;
+          }
+          return `
+            <div class="msg-row ${isUser ? "user" : "bot"}">
+              <div class="msg-bubble">${inner}</div>
+              <div class="msg-time">${esc(msg.time)}</div>
+            </div>
+          `;
+        }).join("");
+
+        bindViewerButtons(container);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      function pushChat(entry) {
+        const h = loadChatHistory();
+        h.push(entry);
+        saveChatHistory(h);
+        renderChatHistory();
+      }
+
+      function searchTopicRows(rows, query) {
+        const q = String(query || "").trim().toLowerCase();
+        if (!q) return [];
+        const tokens = q.split(/\s+/).filter(Boolean);
+
+        return rows.filter(r => {
+          if (!matchesUserMedium(r.medium)) return false;
+          const hay = [
+            r.topic_id, r.grade_kn, r.grade_en,
+            r.topic_name_kn, r.topic_name_en, r.search_keywords
+          ].join(" ").toLowerCase();
+          return tokens.every(tok => hay.includes(tok));
+        });
+      }
+
+      async function handleChatSend(rawText) {
+        const text = String(rawText || "").trim();
+        if (!text || state.isSendingChat) return;
+
+        state.isSendingChat = true;
+        const sendBtn = document.getElementById("chatSendBtn");
+        sendBtn.disabled = true;
+
+        pushChat({ role: "user", type: "text", text, time: formatTime(new Date()) });
+
+        try {
+          const data = await fetchMasterContent();
+          const replyTime = formatTime(new Date());
+          const cmd = text.toLowerCase().replace(/\s+/g, " ");
+
+          if (cmd === "today" || cmd === "today's special" || cmd === "todays special" || cmd === "today special" || cmd === "ಇಂದಿನ ವಿಶೇಷ") {
+            const specials = (data.today_special || []).filter(s => matchesUserMedium(s.medium));
+            if (!specials.length) {
+              pushChat({ role: "bot", type: "text", textKn: I18N.kn.noTodaySpecial, textEn: I18N.en.noTodaySpecial, time: replyTime });
+            } else {
+              pushChat({ role: "bot", type: "special_rows", rows: specials, time: replyTime });
+            }
+          } else if (cmd === "all topics" || cmd === "all" || cmd === "ಎಲ್ಲಾ ವಿಷಯಗಳು") {
+            const visible = (data.topics || []).filter(r => matchesUserMedium(r.medium));
+            if (!visible.length) {
+              pushChat({ role: "bot", type: "text", textKn: I18N.kn.noMatch, textEn: I18N.en.noMatch, time: replyTime });
+            } else {
+              pushChat({ role: "bot", type: "topic_rows", rows: visible, time: replyTime });
+            }
+          } else {
+            const matched = searchTopicRows(data.topics || [], text);
+            if (matched.length > 0) {
+              pushChat({ role: "bot", type: "topic_rows", rows: matched, time: replyTime });
+            } else {
+              pushChat({
+                role: "bot",
+                type: "text",
+                textKn: `${I18N.kn.noMatch} ("${text}")`,
+                textEn: `${I18N.en.noMatch} ("${text}")`,
+                time: replyTime
+              });
+            }
+          }
+        } catch (err) {
+          pushChat({ role: "bot", type: "text", textKn: I18N.kn.backendError, textEn: I18N.en.backendError, time: formatTime(new Date()) });
+        } finally {
+          state.isSendingChat = false;
+          sendBtn.disabled = false;
+        }
+      }
+
+      /* Navigation & Dashboard Entry (Opens Home first) */
+      function switchTab(tab) {
+        document.getElementById("tabChat").classList.toggle("hidden", tab !== "chat");
+        document.getElementById("tabHome").classList.toggle("hidden", tab !== "home");
+        document.getElementById("tabProfile").classList.toggle("hidden", tab !== "profile");
+        document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("active", b.getAttribute("data-tab") === tab));
+      }
+
+      function enterDashboard(sessionData) {
+        state.session = sessionData;
+        safeSet(STORAGE_KEYS.SESSION, JSON.stringify(sessionData));
+
+        document.getElementById("installBanner").classList.add("hidden");
+        document.getElementById("loginView").classList.add("hidden");
+        document.getElementById("appView").classList.remove("hidden");
+
+        document.getElementById("profNameInput").value = sessionData.name || "";
+        document.getElementById("profSchoolInput").value = getSchoolName(sessionData);
+        document.getElementById("profMediumSelect").value = sessionData.medium || "Both";
+        document.getElementById("profEmailInput").value = sessionData.email || "";
+        document.getElementById("profDeviceInput").value = getDeviceId();
+
+        updateHomeView();
+        renderChatHistory();
+        switchTab("home");
+        fetchMasterContent().catch(() => {});
+        verifyLiveDeviceOrLogout();
+      }
+
+      /* Login Medium Pills */
+      document.querySelectorAll("#loginMediumGroup .medium-pill").forEach(pill => {
+        pill.addEventListener("click", () => {
+          document.querySelectorAll("#loginMediumGroup .medium-pill").forEach(p => p.classList.remove("active"));
+          pill.classList.add("active");
+          state.selectedLoginMedium = pill.getAttribute("data-med") || "Both";
+        });
+      });
+
+      /* Login Form Submit */
+      document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (state.isLoggingIn) return;
+
+        const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+        const fb = document.getElementById("loginFeedback");
+        const btn = document.getElementById("loginSubmitBtn");
+        fb.classList.add("hidden");
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          fb.textContent = t("errEmail");
+          fb.classList.remove("hidden");
+          return;
+        }
+        if (!API_URL) {
+          fb.textContent = t("errBackendMissing");
+          fb.classList.remove("hidden");
+          return;
+        }
+
+        state.isLoggingIn = true;
+        btn.disabled = true;
+        btn.textContent = t("loggingIn");
+
+        try {
+          const devId = getDeviceId();
+          const devInfo = (navigator.platform || "Web").slice(0, 18);
+          const url = `${API_URL}?action=verifyUser&email=${encodeURIComponent(email)}&device_id=${encodeURIComponent(devId)}&device_info=${encodeURIComponent(devInfo)}&medium=${encodeURIComponent(state.selectedLoginMedium)}`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("HTTP_ERR");
+          const data = await res.json();
+
+          if (!data || data.allowed !== true) {
+            throw new Error((data && data.message) || t("errAuth"));
+          }
+
+          const teacher = data.teacher || {};
+          enterDashboard({
+            email,
+            name: teacher.name || email.split("@")[0],
+            school_kn: teacher.school_kn || "",
+            school_en: teacher.school_en || "",
+            medium: teacher.medium || state.selectedLoginMedium,
+            device_id: devId
+          });
+        } catch (err) {
+          fb.textContent = (err && err.message && !err.message.includes("Failed to fetch")) ? err.message : t("errAuth");
+          fb.classList.remove("hidden");
+        } finally {
+          state.isLoggingIn = false;
+          btn.disabled = false;
+          btn.textContent = t("btnUnlock");
+        }
+      });
+
+      /* Profile Edit / Save / Cancel / Logout */
+      const editBtn = document.getElementById("editProfileBtn");
+      const saveBtn = document.getElementById("saveProfileBtn");
+      const cancelBtn = document.getElementById("cancelProfileBtn");
+      const nameInp = document.getElementById("profNameInput");
+      const schoolInp = document.getElementById("profSchoolInput");
+      const medSel = document.getElementById("profMediumSelect");
+      const profFb = document.getElementById("profileFeedback");
+
+      function setEditMode(on) {
+        nameInp.disabled = !on;
+        schoolInp.disabled = !on;
+        medSel.disabled = !on;
+        editBtn.classList.toggle("hidden", on);
+        saveBtn.classList.toggle("hidden", !on);
+        cancelBtn.classList.toggle("hidden", !on);
+      }
+
+      editBtn.addEventListener("click", () => { profFb.classList.add("hidden"); setEditMode(true); });
+      cancelBtn.addEventListener("click", () => {
+        if (state.session) {
+          nameInp.value = state.session.name || "";
+          schoolInp.value = getSchoolName(state.session);
+          medSel.value = state.session.medium || "Both";
+        }
+        profFb.classList.add("hidden");
+        setEditMode(false);
+      });
+
+      saveBtn.addEventListener("click", async () => {
+        const newName = nameInp.value.trim();
+        const newSchool = schoolInp.value.trim();
+        const newMedium = medSel.value;
+        if (!newName || !newSchool) {
+          profFb.className = "alert-box alert-error";
+          profFb.textContent = t("profileErr");
+          profFb.classList.remove("hidden");
+          return;
+        }
+        state.session = {
+          ...state.session,
+          name: newName,
+          school_kn: state.lang === "kn" ? newSchool : (state.session.school_kn || newSchool),
+          school_en: state.lang === "en" ? newSchool : (state.session.school_en || newSchool),
+          medium: newMedium
+        };
+        safeSet(STORAGE_KEYS.SESSION, JSON.stringify(state.session));
+
+        if (API_URL) {
+          fetch(`${API_URL}?action=updateProfile&email=${encodeURIComponent(state.session.email)}&name=${encodeURIComponent(newName)}&school=${encodeURIComponent(newSchool)}&medium=${encodeURIComponent(newMedium)}`).catch(() => {});
+        }
+        updateHomeView();
+        setEditMode(false);
+        profFb.className = "alert-box alert-success";
+        profFb.textContent = t("profileSaved");
+        profFb.classList.remove("hidden");
+      });
+
+      const logoutModal = document.getElementById("logoutModal");
+      document.getElementById("logoutTriggerBtn").addEventListener("click", () => logoutModal.classList.remove("hidden"));
+      document.getElementById("cancelLogoutBtn").addEventListener("click", () => logoutModal.classList.add("hidden"));
+      document.getElementById("confirmLogoutBtn").addEventListener("click", () => {
+        logoutModal.classList.add("hidden");
+        forceLogout("");
+      });
+
+      document.querySelectorAll("[data-theme-choice]").forEach(b => b.addEventListener("click", () => applyTheme(b.getAttribute("data-theme-choice"))));
+      document.querySelectorAll("[data-lang-choice]").forEach(b => b.addEventListener("click", () => applyLanguage(b.getAttribute("data-lang-choice"))));
+      document.querySelectorAll(".nav-item").forEach(b => b.addEventListener("click", () => switchTab(b.getAttribute("data-tab"))));
+
+      document.getElementById("chatForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const inp = document.getElementById("chatInput");
+        const v = inp.value;
+        inp.value = "";
+        handleChatSend(v);
+      });
+
+      document.querySelectorAll("[data-quick-cmd]").forEach(c => c.addEventListener("click", () => handleChatSend(c.getAttribute("data-quick-cmd"))));
+
+      if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(() => {});
+
+      applyTheme(state.theme);
+      applyLanguage(state.lang);
+      if (state.session && state.session.email) enterDashboard(state.session);
+      else updateInstallBannerUI();
+    })();
+  </script>
+</body>
+</html>
